@@ -142,14 +142,14 @@ public class AetherMixinHooks {
      * @return The accessory {@link ItemStack} gotten from the entity.
      */
     public static ItemStack getItemByIdentifier(LivingEntity livingEntity, String identifier) {
-       LazyOptional<ICuriosItemHandler> lazyHandler = CuriosApi.getCuriosInventory(livingEntity);
-       if (lazyHandler.isPresent() && lazyHandler.resolve().isPresent()) {
-           ICuriosItemHandler handler = lazyHandler.resolve().get();
-           Optional<SlotResult> optionalResult = handler.findCurio(identifier, 0);
-           if (optionalResult.isPresent()) {
-               return optionalResult.get().stack();
-           }
-       }
+//        LazyOptional<ICuriosItemHandler> lazyHandler = CuriosApi.getCuriosInventory(livingEntity); TODO: PORT
+//        if (lazyHandler.isPresent() && lazyHandler.resolve().isPresent()) {
+//            ICuriosItemHandler handler = lazyHandler.resolve().get();
+//            Optional<SlotResult> optionalResult = handler.findCurio(identifier, 0);
+//            if (optionalResult.isPresent()) {
+//                return optionalResult.get().stack();
+//            }
+//        }
         return ItemStack.EMPTY;
     }
 
@@ -160,10 +160,10 @@ public class AetherMixinHooks {
      * @param identifier The {@link String} for the slot identifier.
      */
     public static void setItemByIdentifier(LivingEntity livingEntity, ItemStack itemStack, String identifier) {
-       LazyOptional<ICuriosItemHandler> lazyHandler = CuriosApi.getCuriosInventory(livingEntity);
-       if (lazyHandler.isPresent() && lazyHandler.resolve().isPresent()) {
-           ICuriosItemHandler handler = lazyHandler.resolve().get();
-           handler.setEquippedCurio(identifier, 0, itemStack);
-       }
+//        LazyOptional<ICuriosItemHandler> lazyHandler = CuriosApi.getCuriosInventory(livingEntity); TODO: PORT
+//        if (lazyHandler.isPresent() && lazyHandler.resolve().isPresent()) {
+//            ICuriosItemHandler handler = lazyHandler.resolve().get();
+//            handler.setEquippedCurio(identifier, 0, itemStack);
+//        }
     }
 }

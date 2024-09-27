@@ -6,8 +6,8 @@ import com.aetherteam.aether.item.accessories.gloves.GlovesItem;
 import com.aetherteam.aether.mixin.mixins.client.accessor.PlayerModelAccessor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.wispforest.accessories.api.client.AccessoryRenderer;
-import io.wispforest.accessories.api.slot.SlotReference;
+import dev.emi.trinkets.api.SlotReference;
+import dev.emi.trinkets.api.client.TrinketRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
@@ -26,7 +26,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 
-public class GlovesRenderer implements AccessoryRenderer {
+public class GlovesRenderer implements TrinketRenderer {
+    public static final GlovesRenderer INSTANCE = new GlovesRenderer();
     private final GlovesModel glovesModel;
     private final GlovesModel glovesTrimModel;
     private final GlovesModel glovesModelSlim;
@@ -47,10 +48,10 @@ public class GlovesRenderer implements AccessoryRenderer {
 
     /**
      * Renders gloves in third person on the player's model.
-     * @param stack The {@link ItemStack} for the Accessory.
-     * @param slotContext The {@link SlotReference} for the Accessory.
+     * @param stack The {@link ItemStack} for the Curio.
+     * @param slotContext The {@link SlotContext} for the Curio.
      * @param poseStack The rendering {@link PoseStack}.
-     * @param contextModel The {@link EntityModel<T>} for the renderer.
+     * @param renderLayerParent The {@link RenderLayerParent} for the renderer.
      * @param buffer The rendering {@link MultiBufferSource}.
      * @param packedLight The {@link Integer} for the packed lighting for rendering.
      * @param limbSwing The {@link Float} for the limb swing rotation.
@@ -61,8 +62,7 @@ public class GlovesRenderer implements AccessoryRenderer {
      * @param headPitch The {@link Float} for the head pitch rotation.
      */
     @Override
-    public <T extends LivingEntity> void render(ItemStack stack, SlotReference slotContext, PoseStack poseStack, EntityModel<T> contextModel, MultiBufferSource buffer, int packedLight, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        LivingEntity livingEntity = slotContext.entity();
+    public void render(ItemStack stack, SlotReference slotContext, EntityModel<? extends LivingEntity> contextModel, PoseStack poseStack, MultiBufferSource buffer, int packedLight, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         GlovesItem glovesItem = (GlovesItem) stack.getItem();
         GlovesModel model = this.glovesModel;
         GlovesModel trimModel = this.glovesTrimModel;
@@ -74,8 +74,8 @@ public class GlovesRenderer implements AccessoryRenderer {
             trimModel = playerModelAccessor.aether$getSlim() ? this.glovesTrimModelSlim : this.glovesTrimModel;
         }
 
-        AccessoryRenderer.followBodyRotations(livingEntity, model);
-        AccessoryRenderer.followBodyRotations(livingEntity, trimModel);
+        TrinketRenderer.followBodyRotations(livingEntity, model);
+        TrinketRenderer.followBodyRotations(livingEntity, trimModel);
 
         float red = glovesItem.getColors(stack).getLeft();
         float green = glovesItem.getColors(stack).getMiddle();

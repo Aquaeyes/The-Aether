@@ -2,7 +2,6 @@ package com.aetherteam.aether.client.event.listeners.capability;
 
 import com.aetherteam.aether.client.event.hooks.CapabilityClientHooks;
 import io.github.fabricators_of_create.porting_lib.event.client.KeyInputCallback;
-import io.github.fabricators_of_create.porting_lib.event.client.MouseInputEvents;
 import net.minecraft.client.player.Input;
 import net.minecraft.world.entity.player.Player;
 

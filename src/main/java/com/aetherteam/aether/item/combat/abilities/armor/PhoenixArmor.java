@@ -3,9 +3,8 @@ package com.aetherteam.aether.item.combat.abilities.armor;
 import com.aetherteam.aether.capability.player.AetherPlayer;
 import com.aetherteam.aether.item.AetherItems;
 import com.aetherteam.aether.item.EquipmentUtil;
-import io.github.fabricators_of_create.porting_lib.entity.events.LivingAttackEvent;
-import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents;
 import dev.emi.trinkets.api.SlotReference;
+import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -178,14 +177,14 @@ public interface PhoenixArmor {
         if (slotResult.getB().hasTag()) {
             outcomeStack.setTag(slotResult.getB().getTag());
         }
-       CuriosApi.getCuriosInventory(entity).ifPresent(iCuriosItemHandler -> {
-           Map<String, ICurioStacksHandler> curios = iCuriosItemHandler.getCurios(); // Map of Curio slot names -> slot stack handlers.
-           ICurioStacksHandler inv = curios.get(slotResult.slotContext().identifier()); // Stack handler for the Curio slot, gotten using the identifier through slotResult.
-           if (inv != null) {
-               IDynamicStackHandler stackHandler = inv.getStacks();
-               stackHandler.setStackInSlot(slotResult.slotContext().index(), outcomeStack); // Changes stack in slot using stack handler.
-           }
-       });
+//        CuriosApi.getCuriosInventory(entity).ifPresent(iCuriosItemHandler -> { TODO: PORT
+//            Map<String, ICurioStacksHandler> curios = iCuriosItemHandler.getCurios(); // Map of Curio slot names -> slot stack handlers.
+//            ICurioStacksHandler inv = curios.get(slotResult.slotContext().identifier()); // Stack handler for the Curio slot, gotten using the identifier through slotResult.
+//            if (inv != null) {
+//                IDynamicStackHandler stackHandler = inv.getStacks();
+//                stackHandler.setStackInSlot(slotResult.slotContext().index(), outcomeStack); // Changes stack in slot using stack handler.
+//            }
+//        });
         if (entity instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.INVENTORY_CHANGED.trigger(serverPlayer, serverPlayer.getInventory(), outcomeStack);
         }
