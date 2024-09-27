@@ -5,10 +5,7 @@ import com.aetherteam.aether.item.AetherItems;
 import com.aetherteam.aether.item.EquipmentUtil;
 import io.github.fabricators_of_create.porting_lib.entity.events.LivingAttackEvent;
 import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents;
-import io.wispforest.accessories.api.AccessoriesCapability;
-import io.wispforest.accessories.api.AccessoriesContainer;
-import io.wispforest.accessories.api.slot.SlotEntryReference;
-import io.wispforest.accessories.impl.ExpandedSimpleContainer;
+import dev.emi.trinkets.api.SlotReference;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -113,7 +110,7 @@ public interface PhoenixArmor {
     /**
      * Slowly increments a timer to convert a player's Phoenix Armor if they're in water, rain, or a bubble column.<br><br>
      * This is done by looping through the armor {@link EquipmentSlot}s and also checking with {@link top.theillusivec4.curios.common.CuriosHelper#findFirstCurio(LivingEntity, Item)} for the gloves.<br><br>
-     * The methods used for this are {@link PhoenixArmor#breakPhoenixArmor(LivingEntity, ItemStack, ItemStack, EquipmentSlot)} and {@link PhoenixArmor#breakPhoenixGloves(LivingEntity, SlotEntryReference, ItemStack)}.
+     * The methods used for this are {@link PhoenixArmor#breakPhoenixArmor(LivingEntity, ItemStack, ItemStack, EquipmentSlot)} and {@link PhoenixArmor#breakPhoenixGloves(LivingEntity, SlotResult, ItemStack)}.
      * @param entity The {@link LivingEntity} wearing the armor.
      * @see com.aetherteam.aether.event.listeners.abilities.ArmorAbilityListener#onEntityUpdate(LivingEntityEvents.LivingTickEvent)
      */
@@ -143,7 +140,7 @@ public interface PhoenixArmor {
                             }
                         }
                     }
-                    SlotEntryReference slotResult = EquipmentUtil.getCurio(entity, AetherItems.PHOENIX_GLOVES.get());
+                    Tuple<SlotReference, ItemStack> slotResult = EquipmentUtil.getCurio(entity, AetherItems.PHOENIX_GLOVES.get());
                     if (slotResult != null) {
                         breakPhoenixGloves(entity, slotResult, new ItemStack(AetherItems.OBSIDIAN_GLOVES.get()));
                     }
@@ -173,23 +170,22 @@ public interface PhoenixArmor {
     /**
      * Replaces the gloves stack and copies over its tags and enchantments.
      * @param entity The {@link LivingEntity} wearing the armor.
-     * @param slotResult The {@link SlotEntryReference} of the Accessory item.
+     * @param slotResult The {@link SlotReference} of the Curio item.
      * @param outcomeStack The replacement {@link ItemStack}.
      */
-    private static void breakPhoenixGloves(LivingEntity entity, SlotEntryReference slotResult, ItemStack outcomeStack) {
-        EnchantmentHelper.setEnchantments(EnchantmentHelper.getEnchantments(slotResult.stack()), outcomeStack);
-        if (slotResult.stack().hasTag()) {
-            outcomeStack.setTag(slotResult.stack().getTag());
+    private static void breakPhoenixGloves(LivingEntity entity, Tuple<SlotReference, ItemStack> slotResult, ItemStack outcomeStack) {
+        EnchantmentHelper.setEnchantments(EnchantmentHelper.getEnchantments(slotResult.getB()), outcomeStack);
+        if (slotResult.getB().hasTag()) {
+            outcomeStack.setTag(slotResult.getB().getTag());
         }
-        AccessoriesCapability iCuriosItemHandler = entity.accessoriesCapability();
-        if (iCuriosItemHandler != null) {
-            Map<String, AccessoriesContainer> curios = iCuriosItemHandler.getContainers(); // Map of Curio slot names -> slot stack handlers.
-            AccessoriesContainer inv = curios.get(slotResult.reference().slotName()); // Stack handler for the Curio slot, gotten using the identifier through slotResult.
-            if (inv != null) {
-                ExpandedSimpleContainer stackHandler = inv.getAccessories();
-                stackHandler.setItem(slotResult.reference().slot(), outcomeStack); // Changes stack in slot using stack handler.
-            }
-        }
+       CuriosApi.getCuriosInventory(entity).ifPresent(iCuriosItemHandler -> {
+           Map<String, ICurioStacksHandler> curios = iCuriosItemHandler.getCurios(); // Map of Curio slot names -> slot stack handlers.
+           ICurioStacksHandler inv = curios.get(slotResult.slotContext().identifier()); // Stack handler for the Curio slot, gotten using the identifier through slotResult.
+           if (inv != null) {
+               IDynamicStackHandler stackHandler = inv.getStacks();
+               stackHandler.setStackInSlot(slotResult.slotContext().index(), outcomeStack); // Changes stack in slot using stack handler.
+           }
+       });
         if (entity instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.INVENTORY_CHANGED.trigger(serverPlayer, serverPlayer.getInventory(), outcomeStack);
         }

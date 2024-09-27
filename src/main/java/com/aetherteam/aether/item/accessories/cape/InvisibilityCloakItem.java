@@ -9,7 +9,7 @@ import com.aetherteam.aether.network.AetherPacketHandler;
 import com.aetherteam.aether.network.packet.clientbound.SetInvisibilityPacket;
 import com.aetherteam.nitrogen.capability.INBTSynchable;
 import com.aetherteam.nitrogen.network.PacketRelay;
-import io.wispforest.accessories.api.slot.SlotReference;
+import dev.emi.trinkets.api.SlotReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,8 +25,7 @@ public class InvisibilityCloakItem extends AccessoryItem {
     }
 
     @Override
-    public void tick(ItemStack stack, SlotReference slotContext) {
-        LivingEntity livingEntity = slotContext.entity();
+    public void tick(ItemStack stack, SlotReference slotContext, LivingEntity livingEntity) {
         if (livingEntity.level().isClientSide() && livingEntity instanceof Player player) {
             AetherPlayer.getOptional(player).ifPresent((aetherPlayer) -> {
                 if (AetherKeys.INVISIBILITY_TOGGLE.consumeClick()) {
@@ -77,8 +76,7 @@ public class InvisibilityCloakItem extends AccessoryItem {
     }
 
     @Override
-    public void onUnequip(ItemStack stack, SlotReference slotContext) {
-        LivingEntity livingEntity = slotContext.entity();
+    public void onUnequip(ItemStack stack, SlotReference slotContext, LivingEntity livingEntity) {
         if (!livingEntity.level().isClientSide() && livingEntity instanceof Player player) {
             AetherPlayer.getOptional(player).ifPresent((aetherPlayer) -> aetherPlayer.setSynched(INBTSynchable.Direction.CLIENT, "setWearingInvisibilityCloak", false));
         }

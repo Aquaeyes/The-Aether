@@ -2,9 +2,10 @@ package com.aetherteam.aether.mixin.mixins.client;
 
 import com.aetherteam.aether.item.EquipmentUtil;
 import com.aetherteam.aether.mixin.AetherMixinHooks;
-import io.wispforest.accessories.api.slot.SlotEntryReference;
+import dev.emi.trinkets.api.SlotReference;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,9 +33,9 @@ public class AbstractClientPlayerMixin {
     @Inject(at = @At("HEAD"), method = "getCloakTextureLocation()Lnet/minecraft/resources/ResourceLocation;", cancellable = true)
     private void getCloakTextureLocation(CallbackInfoReturnable<ResourceLocation> cir) {
         AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
-        SlotEntryReference result = EquipmentUtil.getCape(player);
+        Tuple<SlotReference, ItemStack> result = EquipmentUtil.getCape(player);
         if (result != null && AetherMixinHooks.isCapeVisible(player)) {
-            ResourceLocation texture = AetherMixinHooks.getCapeTexture(result.stack());
+            ResourceLocation texture = AetherMixinHooks.getCapeTexture(result.getB());
             if (texture != null) {
                 cir.setReturnValue(texture);
             }

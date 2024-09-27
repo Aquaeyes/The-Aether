@@ -85,7 +85,7 @@ dependencies {
 //        jarJar.ranged(it, "[${project.curios_version},)")
 //        jarJar.pin(it, "${project.curios_version}+${project.mc_version}")
 //    }
-    modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
+    modImplementation include("dev.emi:trinkets:${project.trinkets_version}")
 
     modCompileOnly("mezz.jei:jei-${mc_version}-common-api:${project.jei_version}")
     modCompileOnly("mezz.jei:jei-${mc_version}-fabric-api:${project.jei_version}")

@@ -5,8 +5,8 @@ import com.aetherteam.aether.event.AetherEventDispatch;
 import com.aetherteam.aether.event.FreezeEvent;
 import com.aetherteam.aether.recipe.AetherRecipeTypes;
 import com.aetherteam.aether.recipe.recipes.block.AccessoryFreezableRecipe;
-import io.wispforest.accessories.api.AccessoriesAPI;
-import io.wispforest.accessories.api.slot.SlotReference;
+import dev.emi.trinkets.api.SlotReference;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,14 +22,14 @@ import net.minecraft.world.level.material.FluidState;
 public interface FreezingAccessory extends FreezingBehavior<ItemStack> {
     /**
      * Freezes blocks around the wearer in a radius of 1.9 as long as they aren't flying or in spectator. This also damages the Ice accessory for every 3 blocks frozen.
-     * @param context The {@link SlotReference} of the Accessory.
+     * @param context The {@link SlotReference} of the Trinket.
      * @param stack The Trinket {@link ItemStack}.
+     * @param livingEntity The {@link LivingEntity} of the Trinket.
      */
-    default void freezeTick(SlotReference context, ItemStack stack) {
-        LivingEntity livingEntity = context.entity();
+    default void freezeTick(SlotReference context, ItemStack stack, LivingEntity livingEntity) {
         if (!(livingEntity instanceof Player player) || (!player.getAbilities().flying && !player.isSpectator())) {
             int damage = this.freezeBlocks(livingEntity.level(), livingEntity.blockPosition(), stack, 1.9F);
-            stack.hurtAndBreak(damage / 3, livingEntity, wearer -> AccessoriesAPI.breakStack(context));
+            stack.hurtAndBreak(damage / 3, livingEntity, wearer -> TrinketsApi.onTrinketBroken(stack, context, livingEntity));
         }
     }
 
