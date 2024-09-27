@@ -22,6 +22,7 @@ eclipse
 run
 __pycache__
 logs
+.DS_Store
 
 # Files from Forge MDK
 forge*changelog.txt
