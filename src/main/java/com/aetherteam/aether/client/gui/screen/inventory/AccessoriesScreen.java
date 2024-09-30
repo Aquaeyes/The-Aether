@@ -14,6 +14,9 @@ import com.aetherteam.nitrogen.api.users.User;
 import com.aetherteam.nitrogen.api.users.UserData;
 import com.aetherteam.nitrogen.network.PacketRelay;
 import com.mojang.blaze3d.platform.InputConstants;
+import io.github.fabricators_of_create.porting_lib.mixin.accessors.client.accessor.AbstractContainerScreenAccessor;
+import io.github.fabricators_of_create.porting_lib.util.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -243,119 +246,119 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
 //
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-       if (this.getMinecraft().player != null) {
-           int i = this.getGuiLeft();
-           int j = this.getGuiTop();
-            guiGraphics.blit(this.getMinecraft().player.isCreative() ? ACCESSORIES_INVENTORY_CREATIVE : ACCESSORIES_INVENTORY, i, j, 0, 0, this.imageWidth + this.creativeXOffset(), this.imageHeight);
-           InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i + 33, j + 75, 30, (float) (i + 31) - mouseX, (float) (j + 75 - 50) - mouseY, this.getMinecraft().player);
-       }
+    //    if (this.getMinecraft().player != null) {
+    //        int i = this.getGuiLeft();
+    //        int j = this.getGuiTop();
+    //         guiGraphics.blit(this.getMinecraft().player.isCreative() ? ACCESSORIES_INVENTORY_CREATIVE : ACCESSORIES_INVENTORY, i, j, 0, 0, this.imageWidth + this.creativeXOffset(), this.imageHeight);
+    //        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i + 33, j + 75, 30, (float) (i + 31) - mouseX, (float) (j + 75 - 50) - mouseY, this.getMinecraft().player);
+    //    }
     }
 
-   /**
-    * @return The {@link Integer} y-offset for the GUI.
-    */
-   private int creativeXOffset() {
-       return this.getMinecraft().player != null && this.getMinecraft().player.isCreative() ? 18 : 0;
-   }
+//    /**
+//     * @return The {@link Integer} y-offset for the GUI.
+//     */
+//    private int creativeXOffset() {
+//        return this.getMinecraft().player != null && this.getMinecraft().player.isCreative() ? 18 : 0;
+//    }
 
-   @Override
-   protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-       Minecraft minecraft = this.getMinecraft();
-       LocalPlayer clientPlayer = minecraft.player;
-       if (clientPlayer != null && clientPlayer.inventoryMenu.getCarried().isEmpty()) {
-           if (this.isRenderButtonHovered) {
-               guiGraphics.renderTooltip(this.font, Component.translatable("gui.curios.toggle"), mouseX, mouseY);
-           } else if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
-               guiGraphics.renderTooltip(this.font, this.hoveredSlot.getItem(), mouseX, mouseY);
-           }
-       }
-   }
+//    @Override
+//    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+//        Minecraft minecraft = this.getMinecraft();
+//        LocalPlayer clientPlayer = minecraft.player;
+//        if (clientPlayer != null && clientPlayer.inventoryMenu.getCarried().isEmpty()) {
+//            if (this.isRenderButtonHovered) {
+//                guiGraphics.renderTooltip(this.font, Component.translatable("gui.curios.toggle"), mouseX, mouseY);
+//            } else if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
+//                guiGraphics.renderTooltip(this.font, this.hoveredSlot.getItem(), mouseX, mouseY);
+//            }
+//        }
+//    }
 
-   @Override
-   protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-       if (this.getMinecraft().player != null) {
-           guiGraphics.drawString(this.font, this.title, 115, 6, 4210752, false);
-       }
-   }
+//    @Override
+//    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+//        if (this.getMinecraft().player != null) {
+//            guiGraphics.drawString(this.font, this.title, 115, 6, 4210752, false);
+//        }
+//    }
 
-   @Override
-   public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-       if (this.getRecipeBookComponent().isVisible() && this.widthTooNarrow) {
-           this.getRecipeBookComponent().toggleVisibility();
-           this.updateScreenPosition();
-           return true;
-       } else
-        if (KeyBindingHelper.isActiveAndMatches(AetherKeys.OPEN_ACCESSORY_INVENTORY, InputConstants.getKey(keyCode, scanCode))) {
-           LocalPlayer playerEntity = this.getMinecraft().player;
-           if (playerEntity != null) {
-               playerEntity.closeContainer();
-           }
-           return true;
-       } else {
-           return super.keyPressed(keyCode, scanCode, modifiers);
-       }
-   }
+//    @Override
+//    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+//        if (this.getRecipeBookComponent().isVisible() && this.widthTooNarrow) {
+//            this.getRecipeBookComponent().toggleVisibility();
+//            this.updateScreenPosition();
+//            return true;
+//        } else
+//         if (KeyBindingHelper.isActiveAndMatches(AetherKeys.OPEN_ACCESSORY_INVENTORY, InputConstants.getKey(keyCode, scanCode))) {
+//            LocalPlayer playerEntity = this.getMinecraft().player;
+//            if (playerEntity != null) {
+//                playerEntity.closeContainer();
+//            }
+//            return true;
+//        } else {
+//            return super.keyPressed(keyCode, scanCode, modifiers);
+//        }
+//    }
 
-   @Override
-   protected boolean isHovering(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
-       if (this.isRenderButtonHovered) {
-           return false;
-       }
-       return (!this.widthTooNarrow || !this.getRecipeBookComponent().isVisible()) && super.isHovering(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
-   }
+//    @Override
+//    protected boolean isHovering(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
+//        if (this.isRenderButtonHovered) {
+//            return false;
+//        }
+//        return (!this.widthTooNarrow || !this.getRecipeBookComponent().isVisible()) && super.isHovering(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
+//    }
 
-   @Override
-   public boolean mouseClicked(double mouseX, double mouseY, int button) {
-       if (this.getRecipeBookComponent().mouseClicked(mouseX, mouseY, button)) {
-           this.setFocused(this.getRecipeBookComponent());
-           return true;
-       } else {
-           return (!this.widthTooNarrow || !this.getRecipeBookComponent().isVisible()) && super.mouseClicked(mouseX, mouseY, button);
-       }
-   }
+//    @Override
+//    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//        if (this.getRecipeBookComponent().mouseClicked(mouseX, mouseY, button)) {
+//            this.setFocused(this.getRecipeBookComponent());
+//            return true;
+//        } else {
+//            return (!this.widthTooNarrow || !this.getRecipeBookComponent().isVisible()) && super.mouseClicked(mouseX, mouseY, button);
+//        }
+//    }
 
-   @Override
-   public boolean mouseReleased(double mouseX, double mouseY, int button) {
-       if (this.buttonClicked) {
-           this.buttonClicked = false;
-           return true;
-       } else {
-           return super.mouseReleased(mouseX, mouseY, button);
-       }
-   }
+//    @Override
+//    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+//        if (this.buttonClicked) {
+//            this.buttonClicked = false;
+//            return true;
+//        } else {
+//            return super.mouseReleased(mouseX, mouseY, button);
+//        }
+//    }
 
-   @Override
-   protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
-       return RecipeBookBehavior.super.hasClickedOutside(this, mouseX, mouseY, guiLeft, guiTop, mouseButton);
-   }
+//    @Override
+//    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
+//        return RecipeBookBehavior.super.hasClickedOutside(this, mouseX, mouseY, guiLeft, guiTop, mouseButton);
+//    }
 
-   /**
-    * [CODE COPY] {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen}.<br><br>
-    * Heavily modified to only have behavior for the item trash slot.
-    */
-   @Override
-   protected void slotClicked(@Nullable Slot slot, int slotId, int mouseButton, ClickType type) {
-       RecipeBookBehavior.super.slotClicked(this, slot);
-       if (this.getMinecraft().player != null && this.getMinecraft().gameMode != null) {
-           boolean flag = type == ClickType.QUICK_MOVE;
-           if (slot != null || type == ClickType.QUICK_CRAFT) {
-               if (slot == null || slot.mayPickup(this.getMinecraft().player)) {
-                   if (slot == this.destroyItemSlot && this.destroyItemSlot != null && flag) {
-                       for (int j = 0; j < this.getMinecraft().player.inventoryMenu.getItems().size(); ++j) {
-                           this.getMinecraft().gameMode.handleCreativeModeItemAdd(ItemStack.EMPTY, j);
-//                            NetworkHandler.INSTANCE.send(PacketDistributor.SERVER.noArg(), new CPacketDestroy()); TODO: PORT
-                       }
-                   } else {
-                       if (slot == this.destroyItemSlot && this.destroyItemSlot != null) {
-                           this.getMenu().setCarried(ItemStack.EMPTY);
-                           PacketRelay.sendToServer(AetherPacketHandler.INSTANCE, new ClearItemPacket(this.getMinecraft().player.getId()));
-                       }
-                   }
-               }
-           }
-           super.slotClicked(slot, slotId, mouseButton, type);
-       }
-   }
+//    /**
+//     * [CODE COPY] {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen}.<br><br>
+//     * Heavily modified to only have behavior for the item trash slot.
+//     */
+//    @Override
+//    protected void slotClicked(@Nullable Slot slot, int slotId, int mouseButton, ClickType type) {
+//        RecipeBookBehavior.super.slotClicked(this, slot);
+//        if (this.getMinecraft().player != null && this.getMinecraft().gameMode != null) {
+//            boolean flag = type == ClickType.QUICK_MOVE;
+//            if (slot != null || type == ClickType.QUICK_CRAFT) {
+//                if (slot == null || slot.mayPickup(this.getMinecraft().player)) {
+//                    if (slot == this.destroyItemSlot && this.destroyItemSlot != null && flag) {
+//                        for (int j = 0; j < this.getMinecraft().player.inventoryMenu.getItems().size(); ++j) {
+//                            this.getMinecraft().gameMode.handleCreativeModeItemAdd(ItemStack.EMPTY, j);
+// //                            NetworkHandler.INSTANCE.send(PacketDistributor.SERVER.noArg(), new CPacketDestroy()); TODO: PORT
+//                        }
+//                    } else {
+//                        if (slot == this.destroyItemSlot && this.destroyItemSlot != null) {
+//                            this.getMenu().setCarried(ItemStack.EMPTY);
+//                            PacketRelay.sendToServer(AetherPacketHandler.INSTANCE, new ClearItemPacket(this.getMinecraft().player.getId()));
+//                        }
+//                    }
+//                }
+//            }
+//            super.slotClicked(slot, slotId, mouseButton, type);
+//        }
+//    }
 
     @Override
     public void recipesUpdated() {
@@ -367,12 +370,12 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
         return this.recipeBookComponent;
     }
 
-   @Override
-   public boolean canSeeEffects() {
-        int i = this.getGuiLeft() + this.imageWidth + 2 + this.creativeXOffset();
-       int j = this.width - i;
-       return j > 13;
-   }
+//    @Override
+//    public boolean canSeeEffects() {
+//         int i = this.getGuiLeft() + this.imageWidth + 2 + this.creativeXOffset();
+//        int j = this.width - i;
+//        return j > 13;
+//    }
 
     /**
      * Offsets the accessories screen button based on what screen is currently open.
