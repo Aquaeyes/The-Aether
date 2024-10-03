@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Used only in runData to get around an incorrect missing texture issue with armor trim data generation.
  */
-/**
+
 @Mixin(ModelBuilder.class)
 public abstract class ModelBuilderMixin<T extends ModelBuilder<T>> {
     @Shadow(remap = false)
@@ -30,4 +30,3 @@ public abstract class ModelBuilderMixin<T extends ModelBuilder<T>> {
         cir.setReturnValue(this.self());
     }
 }
- */
