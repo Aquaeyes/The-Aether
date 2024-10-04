@@ -1,0 +1,2606 @@
+diff --git a/.gitignore b/.gitignore
+index 7c92c6a79..b45fc889f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,6 +22,7 @@ eclipse
+ run
+ __pycache__
+ logs
++.DS_Store
+ 
+ # Files from Forge MDK
+ forge*changelog.txt
+diff --git a/build.gradle b/build.gradle
+index cda75d5f7..a44897c60 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -123,9 +123,11 @@ repositories {
+     maven { url = "https://jitpack.io" }
+     maven { url = "https://maven.blamejared.com" }
+     maven { url = "https://maven.theillusivec4.top/" }
++    maven { url 'https://maven.wispforest.io' }
+     maven { url = "https://www.cursemaven.com" }
+     maven { url = "https://gitlab.com/api/v4/projects/21830712/packages/maven" }
+     maven { url = "https://maven.parchmentmc.org" }
++    maven { url = "https://maven.neoforged.net/releases/" }
+     maven { url = "https://maven.shedaniel.me/" }
+     maven { url = "https://mvn.devos.one/snapshots/" }
+     maven { url = "https://maven.ladysnake.org/releases" }
+@@ -163,6 +165,10 @@ compileJava {
+     options.incremental = false
+ }
+ 
++java {
++    withSourcesJar()
++}
++
+ publishing {
+     publications {
+         mavenJava(MavenPublication) {
+diff --git a/gradle.properties b/gradle.properties
+index 41cbcc68d..e20a2fa83 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -16,7 +16,7 @@ fabric_api_version=0.92.1+1.20.1
+ mixinextras_version=0.2.0-beta.9
+ nitrogen_version=1.20.1-1.0.7-fabric
+ cumulus_version=1.20.1-1.0.0-beta.1.1-fabric
+-port_lib_version=2.3.5-beta.24
++port_lib_version=2.3.5-beta.31
+ # adding a module also requires adding a dependency to the FMJ
+ port_lib_modules=accessors,attributes,asm,base,blocks,brewing,client_events,core,common,config,data,entity,extensions,gui_utils,items,models,model_loader,networking,tags,tool_actions,transfer,fluids,lazy_registration,loot,utility,level_events,recipe_book_categories
+ cca_version=5.2.2
+diff --git a/gradlew b/gradlew
+old mode 100644
+new mode 100755
+diff --git a/src/generated/resources/.cache/1b62592f0d875a7729d998a00ed81e305208bc72 b/src/generated/resources/.cache/1b62592f0d875a7729d998a00ed81e305208bc72
+index 6f7e13854..c877c2e3a 100644
+--- a/src/generated/resources/.cache/1b62592f0d875a7729d998a00ed81e305208bc72
++++ b/src/generated/resources/.cache/1b62592f0d875a7729d998a00ed81e305208bc72
+@@ -1,2 +1,2 @@
+-// 1.20.1	2024-04-23T15:10:26.227122962	The Aether/Tags for minecraft:fluid
++// 1.20.1	2024-05-18T16:11:29.112105538	The Aether/Tags for minecraft:fluid
+ f6eca72dd4b4422c346515178cdf6bb93bfccfa5 data/aether/tags/fluids/allowed_bucket_pickup.json
+diff --git a/src/generated/resources/.cache/20ae38479ca856b47e16ccded45d5f019482032d b/src/generated/resources/.cache/20ae38479ca856b47e16ccded45d5f019482032d
+index 08c9a1668..aa6ea48ae 100644
+--- a/src/generated/resources/.cache/20ae38479ca856b47e16ccded45d5f019482032d
++++ b/src/generated/resources/.cache/20ae38479ca856b47e16ccded45d5f019482032d
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.222785803	The Aether/Loot Tables
++// 1.20.1	2024-05-18T16:11:29.102867228	The Aether/Loot Tables
+ 72f0aa574c8af007e01ce5d0f1429b611414a77b data/aether/loot_tables/entities/sheepuff/cyan.json
+ f46e6a140ca62218de348fbec97d9e4cfcd36fc7 data/aether/loot_tables/entities/phyg.json
+ 4456968e01300ae8b75f0589c27d56fc4bcc054c data/aether/loot_tables/blocks/boss_doorway_angelic_stone.json
+diff --git a/src/generated/resources/.cache/3bd8b7cd0d03a2351e6c535429897b96192d9824 b/src/generated/resources/.cache/3bd8b7cd0d03a2351e6c535429897b96192d9824
+index e355dbf37..0c2f5bc2e 100644
+--- a/src/generated/resources/.cache/3bd8b7cd0d03a2351e6c535429897b96192d9824
++++ b/src/generated/resources/.cache/3bd8b7cd0d03a2351e6c535429897b96192d9824
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.218674675	The Aether/Recipes
++// 1.20.1	2024-05-18T16:11:29.096948284	The Aether/Recipes
+ 744b3d40e0b7b48cd1c67b1f5c7b4d313be7c31d data/aether/advancements/recipes/combat/white_cape.json
+ f602ab13be591d68f06690ce81f98d8b8ef6b3c9 data/aether/advancements/recipes/tools/golden_axe_repairing.json
+ bde8e05e58033417c2db3c7b93ee29e853fa29c7 data/aether/recipes/black_candle_cake_conversion.json
+@@ -543,8 +543,8 @@ ce9ab2e043b1d5d8747a22324584f0bcf4c2b3b1 data/aether/advancements/recipes/buildi
+ c034685da9192c0b88a60bef96fb2c6b58506eea data/aether/advancements/recipes/building_blocks/blue_aercloud_freezing.json
+ 464926da9049cd8541aac16328cb5b03f953b60c data/aether/advancements/recipes/building_blocks/ice_from_bucket_freezing.json
+ 16ea2186f8a282c6fd7c00083364dc1fa51eb4b5 data/aether/recipes/holystone_sword.json
+-14dd4d398700596a75d9058a035462e11abdc552 data/aether/advancements/recipes/tools/skyroot_shovel.json
+ 975613b3303ef36db05a46693750d61a462bbe83 data/aether/advancements/recipes/building_blocks/golden_oak_wood.json
++14dd4d398700596a75d9058a035462e11abdc552 data/aether/advancements/recipes/tools/skyroot_shovel.json
+ beffc7c35832f0fb05d70eb0b01e88f6b1b64a39 data/aether/recipes/holystone_brick_wall_from_holystone_bricks_stonecutting.json
+ f9d460bc536cf24497c0c2366a0443c77cf295ed data/aether/recipes/golden_boots_repairing.json
+ 41844462a809c64934544d72046db726bd222886 data/aether/recipes/angelic_stone_from_light_angelic_stone_stonecutting.json
+diff --git a/src/generated/resources/.cache/3efd05ac7b4290939709574026332160b417de7a b/src/generated/resources/.cache/3efd05ac7b4290939709574026332160b417de7a
+index 3104158dd..9c60e6e04 100644
+--- a/src/generated/resources/.cache/3efd05ac7b4290939709574026332160b417de7a
++++ b/src/generated/resources/.cache/3efd05ac7b4290939709574026332160b417de7a
+@@ -1,2 +1,2 @@
+-// 1.20.1	2024-04-23T15:10:26.224945388	The Aether/Pack Metadata
++// 1.20.1	2024-05-18T16:11:29.107941779	The Aether/Pack Metadata
+ 1a67ca6fa0b2acc4b2db8da8693f2a705fa1a2de pack.mcmeta
+diff --git a/src/generated/resources/.cache/3f9c2c342fb74981e8866c6889a66dec5b1ee97d b/src/generated/resources/.cache/3f9c2c342fb74981e8866c6889a66dec5b1ee97d
+index 8036d813c..4c95f1fdf 100644
+--- a/src/generated/resources/.cache/3f9c2c342fb74981e8866c6889a66dec5b1ee97d
++++ b/src/generated/resources/.cache/3f9c2c342fb74981e8866c6889a66dec5b1ee97d
+@@ -1,2 +1,2 @@
+-// 1.20.1	2024-04-23T15:10:26.223321034	The Aether/Sound Definitions
++// 1.20.1	2024-05-18T16:11:29.104022681	The Aether/Sound Definitions
+ 6b807bc792f525054b521f918e6718a3b14b4443 assets/aether/sounds.json
+diff --git a/src/generated/resources/.cache/4b1d713ed1250f9a7e745a48b4c9a909f18165c5 b/src/generated/resources/.cache/4b1d713ed1250f9a7e745a48b4c9a909f18165c5
+index 31e0412a3..23ac2103a 100644
+--- a/src/generated/resources/.cache/4b1d713ed1250f9a7e745a48b4c9a909f18165c5
++++ b/src/generated/resources/.cache/4b1d713ed1250f9a7e745a48b4c9a909f18165c5
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.225592469	The Aether/Item Models: aether
++// 1.20.1	2024-05-18T16:11:29.109328712	The Aether/Item Models: aether
+ bc683347eca1ebc45adaa03aa5500d6326efd107 assets/aether/models/item/iron_gloves_redstone_trim.json
+ 5b3eb4ea3b697e05d6c2d4a003c7539c558fb521 assets/aether/models/item/skyroot_fence_gate.json
+ e9ab8590c32480a379bbe843fc15a661ed1a6c2f assets/aether/models/item/red_cape.json
+diff --git a/src/generated/resources/.cache/4b6587f306cf6166bb85b0cd753d4f985d0b42b3 b/src/generated/resources/.cache/4b6587f306cf6166bb85b0cd753d4f985d0b42b3
+index fd4558457..5db618f2f 100644
+--- a/src/generated/resources/.cache/4b6587f306cf6166bb85b0cd753d4f985d0b42b3
++++ b/src/generated/resources/.cache/4b6587f306cf6166bb85b0cd753d4f985d0b42b3
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.223711775	The Aether/Block States: aether
++// 1.20.1	2024-05-18T16:11:29.105096713	The Aether/Block States: aether
+ 549e5b819c56945483e09a6cc7127aec41fbfc82 assets/aether/models/block/holystone_brick_stairs_inner.json
+ 543e38493b28057483702ecc046a5768d26d2aec assets/aether/blockstates/skyroot_planks.json
+ 62591dd2d094bff022d534b7b91295e86a1e649b assets/aether/models/block/potted_berry_bush_stem.json
+diff --git a/src/generated/resources/.cache/59189ee9ae9c074979a45f5c7019d798c578e836 b/src/generated/resources/.cache/59189ee9ae9c074979a45f5c7019d798c578e836
+index cacf959cb..72737471f 100644
+--- a/src/generated/resources/.cache/59189ee9ae9c074979a45f5c7019d798c578e836
++++ b/src/generated/resources/.cache/59189ee9ae9c074979a45f5c7019d798c578e836
+@@ -1,2 +1,2 @@
+-// 1.20.1	2024-04-23T15:10:26.225521089	The Aether/Languages: en_us
++// 1.20.1	2024-05-18T16:11:29.108971721	The Aether/Languages: en_us
+ e7e94e6fd59dfba72560405db1ea7169ba8d771e assets/aether/lang/en_us.json
+diff --git a/src/generated/resources/.cache/778f4befc0e9e7ae70bff01e67951dab45bf7771 b/src/generated/resources/.cache/778f4befc0e9e7ae70bff01e67951dab45bf7771
+index c141dc5dc..82ccf8494 100644
+--- a/src/generated/resources/.cache/778f4befc0e9e7ae70bff01e67951dab45bf7771
++++ b/src/generated/resources/.cache/778f4befc0e9e7ae70bff01e67951dab45bf7771
+@@ -1,29 +1,29 @@
+-// 1.20.1	2024-04-23T15:10:26.223398015	The Aether/Advancements
++// 1.20.1	2024-05-18T16:11:29.104238121	The Aether/Advancements
++8e37deba2bb6656eeea0e816b25ca1a85ff9e109 data/aether/advancements/loreception.json
++972f4e2a0034b0fa32e7abd7c2d63aa3c3fd1986 data/aether/advancements/icestone.json
+ 398a96fa0ca394bc7c0a65a04efb4043da5c9246 data/aether/advancements/aether_sleep.json
+ a995576a777a4fdbae266f290a92779cfd8b590b data/aether/advancements/obtain_petal.json
++d46db2002af3486fe8c7d489a6af1ef868e209ce data/aether/advancements/ice_accessory.json
++8be61f379152f855889f6bdad0252b1f1f62cc26 data/aether/advancements/obtain_egg.json
+ 3befe5eca7bc73c94e8ac370366c168188947374 data/aether/advancements/enchanted_gravitite.json
++c9700a239914cd4e53f5ebb003ab84d0c7d30bca data/aether/advancements/gravitite_armor.json
++546599b4c41349c9fb43bf16f33fbd4992b65137 data/aether/advancements/read_lore.json
+ aee32d6d0fd6fd55f0585b323c907f0417485c40 data/aether/advancements/mount_phyg.json
++4883a514502aabc889255fd95cfd2268fc719143 data/aether/advancements/incubate_moa.json
++330c4a9d97b1d5a399ff23c8e21cb91088a9db5c data/aether/advancements/black_moa.json
+ 4bbbe6551748f8256e0bd03870fa15ba54a3de9a data/aether/advancements/phoenix_armor.json
+ a3642bd91e2f4628c95f569ca383508c1b40abb1 data/aether/advancements/silver_dungeon.json
+ a49db2544172bf2edeb20923b64219f89d4c0133 data/aether/advancements/zephyr_hammer.json
++f6f08792ddce0582f82d1f7e7e50dbc671b4d6ce data/aether/advancements/regen_stone.json
+ 047c395ede5ce83dfebfe30c630fc27cc848cfe0 data/aether/advancements/the_aether.json
+ 86ba6d249230937de27d7e358d5c271ec1b29027 data/aether/advancements/valkyrie_hoe.json
++b23fb5a464d49e1bf657d0abf9a7eec946b6554c data/aether/advancements/craft_altar.json
+ 4c5bd607d5ea347087cab6922ea97803b1ff0be5 data/aether/advancements/obsidian_armor.json
+ f6fc39b2fa0f9ae8e3705979b7bac6311f7a9ea8 data/aether/advancements/valkyrie_loot.json
+ 3764818a63e6d2ab845fc848321d3caa82c67dab data/aether/advancements/hammer_loot.json
++2d1b087bdf6bd05b9308be4323ae288c8ee4ffbb data/aether/advancements/zanite.json
+ 3b6befa6d45ab21b57cdf6560850464c23dda189 data/aether/advancements/enter_aether.json
+ 96807d378c121f81547033b3cf695836cc2a490d data/aether/advancements/bronze_dungeon.json
+ 578969d977c4e79eb9324ac5aafc536535d3edd0 data/aether/advancements/gold_dungeon.json
+-45850ed4b02f76d3671bfe265a5756266eb1eac4 data/aether/advancements/lance_loot.json
+-8e37deba2bb6656eeea0e816b25ca1a85ff9e109 data/aether/advancements/loreception.json
+-972f4e2a0034b0fa32e7abd7c2d63aa3c3fd1986 data/aether/advancements/icestone.json
+-d46db2002af3486fe8c7d489a6af1ef868e209ce data/aether/advancements/ice_accessory.json
+-8be61f379152f855889f6bdad0252b1f1f62cc26 data/aether/advancements/obtain_egg.json
+-c9700a239914cd4e53f5ebb003ab84d0c7d30bca data/aether/advancements/gravitite_armor.json
+-546599b4c41349c9fb43bf16f33fbd4992b65137 data/aether/advancements/read_lore.json
+-4883a514502aabc889255fd95cfd2268fc719143 data/aether/advancements/incubate_moa.json
+-330c4a9d97b1d5a399ff23c8e21cb91088a9db5c data/aether/advancements/black_moa.json
+-f6f08792ddce0582f82d1f7e7e50dbc671b4d6ce data/aether/advancements/regen_stone.json
+-b23fb5a464d49e1bf657d0abf9a7eec946b6554c data/aether/advancements/craft_altar.json
+-2d1b087bdf6bd05b9308be4323ae288c8ee4ffbb data/aether/advancements/zanite.json
+ 4a2c9f8e5a9f000b91ce42864768dbe69f26044e data/aether/advancements/blue_aercloud.json
++45850ed4b02f76d3671bfe265a5756266eb1eac4 data/aether/advancements/lance_loot.json
+diff --git a/src/generated/resources/.cache/8a0c5f8a7ea106058045d2ef12e902f69fffa0c0 b/src/generated/resources/.cache/8a0c5f8a7ea106058045d2ef12e902f69fffa0c0
+index 1f27f3d56..1bd80f347 100644
+--- a/src/generated/resources/.cache/8a0c5f8a7ea106058045d2ef12e902f69fffa0c0
++++ b/src/generated/resources/.cache/8a0c5f8a7ea106058045d2ef12e902f69fffa0c0
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.222391343	The Aether/Tags for minecraft:item
++// 1.20.1	2024-05-18T16:11:29.102016566	The Aether/Tags for minecraft:item
+ 38ebf86c0d3c062567705f6b601c2148a0835b65 data/minecraft/tags/items/hoes.json
+ a13013ed9a39e23dbed6bd7d18a23dc6cbaabf99 data/aether/tags/items/tools/lances.json
+ d78893df4ea9187e50e06a56a808054f3248382d data/c/tags/items/boots.json
+@@ -21,7 +21,7 @@ f70a7946cc45435e75e6cd64f7b925fd221e15c0 data/minecraft/tags/items/stone_craftin
+ 659f7d467da041767129fa04d381834d69fafd44 data/c/tags/items/wooden_fence_gates.json
+ 5f4e6e4cc59e21f627843a64996db17584566cfe data/aether/tags/items/gold_dungeon_loot.json
+ 6341df4e85728353213593af68bfecb0c1ddb39e data/aether/tags/items/candy_cane_repairing.json
+-3a1dd94c90f05e4dde7eea947500ef3b3388e0c9 data/aether/tags/items/accessories.json
++02304ec865c3f4215a72ce010229c5c16968878a data/aether/tags/items/accessories.json
+ 26bdcb857cae4dae7df64a87d41a125570f84293 data/minecraft/tags/items/wooden_doors.json
+ e44bf2dd952537ff883d46f11b5c2521d820d5d2 data/minecraft/tags/items/hanging_signs.json
+ 3887ea576666aa3652267f65b89c9f16a6c79ad8 data/minecraft/tags/items/bookshelf_books.json
+@@ -35,7 +35,6 @@ c06dcb222c25d98dd0ce5f8fbe754dfea8c35584 data/minecraft/tags/items/shovels.json
+ 70d34baf255cf4439a3b47927f4e72583a8c1ff2 data/aether/tags/items/gravitite_repairing.json
+ 697b721a69daa6baddb5e2edfd2840c45e79cbb9 data/c/tags/items/bows.json
+ dee0f29688d78798fbadfb82bfdc4300cd29e6e7 data/c/tags/items/chestplates.json
+-bbaa16f1f02c4bd778235c087a7fbb29a46e1e32 data/trinket/tags/items/aether_accessory.json
+ 46b298899063cfd0c24732e6b6ae14b8088e7804 data/aether/tags/items/water_bucket_crafting.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/phoenix_repairing.json
+ 3bd2e6fdd4c27659aaba6f96bfff811683cf9115 data/minecraft/tags/items/piglin_loved.json
+@@ -53,6 +52,7 @@ b450837789f077896b1ec8af26c600561670e23d data/aether/tags/items/dungeon_blocks.j
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/hammer_of_kingbdogz_repairing.json
+ 260a7f1dac83f6801b065744e85adeeee3c96d68 data/c/tags/items/leggings.json
+ bbf0d0c17212568adf6c02381fe81bf1670bf7ff data/aether/tags/items/sheepuff_temptation_items.json
++10d43b920545c952ad58ebcdf75b541fa8158d17 data/accessories/tags/items/aether_ring.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/valkyrie_repairing.json
+ ee3d9c4c74c95a388e8044f4aa7a6198d93ad083 data/minecraft/tags/items/wooden_stairs.json
+ 370fffc45a13c0f12b26be7a1fd5c1252021eb63 data/aether/tags/items/accessories_pendants.json
+@@ -68,7 +68,6 @@ b847d786f30d3d0cdc3a4409b9a7082dabba0e34 data/c/tags/items/slimeballs.json
+ 58e6c10cbba665eba5d0df910db0464b36cb4e15 data/aether/tags/items/freezable_rings.json
+ 27ec7478d3d730f2137c76f8728d96a60d03d525 data/aether/tags/items/pig_drops.json
+ 9e18dd9d83727d5e7f20016037ed41d1ba48100e data/aether/tags/items/bronze_dungeon_loot.json
+-37f183384192d14c413a053e57638d22b0142ca0 data/trinket/tags/items/aether_cape.json
+ 3975fc4afb78f6160b4692c0082c910e1e59d872 data/aether/tags/items/sentry_blocks.json
+ 5f3c5bb8464dc6568f7e8b6cf6bb5281b4a40fcd data/minecraft/tags/items/wooden_trapdoors.json
+ 2acfd77949230dd0101bbe7104747bafdf01bee7 data/minecraft/tags/items/music_discs.json
+@@ -81,22 +80,24 @@ e9f08a579bf5779dc2cca99315042618a8b93c0b data/aether/tags/items/zanite_repairing
+ 88755054bae0b364e46370a0ed024be696e5c085 data/minecraft/tags/items/slabs.json
+ 2f718cd41d1abf899ca612f6ede7c271f19b7fb1 data/aether/tags/items/holystone.json
+ d732e520c2a7bfaed06c5dc6a584f2163b801a62 data/c/tags/items/colorless_glass.json
++ce10f123f4b781379f2dc60cabb56424dbcaad09 data/accessories/tags/items/aether_gloves.json
+ 1774e1109d7f8646050f958510488e3735d1fdb3 data/minecraft/tags/items/trim_materials.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/aether_portal_activation_items.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/sentry_repairing.json
+ f4d7ff8ed2ff7c665a70d48dc8e09eea2a38b2dc data/minecraft/tags/items/signs.json
+ c63a7a1aa5587ad47873835b65ed3fca4fc13006 data/minecraft/tags/items/wooden_buttons.json
+ ef4ce84a0782b0b33791bb751a287e73244c05b7 data/aether/tags/items/dungeon_keys.json
++37f183384192d14c413a053e57638d22b0142ca0 data/accessories/tags/items/aether_cape.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/vampire_repairing.json
+-44fb0354da3ff2f1b8ae4bca188ed7fb3acb6bf9 data/trinket/tags/items/aether_pendant.json
+ 0eb12150059c59b5f12ce688e291290ae18cf7b3 data/minecraft/tags/items/saplings.json
+ 32281c4552eb4383b7e848cf00a3c946d146b128 data/c/tags/items/storage_blocks.json
+ e6a2ad025e148ce0d7ff150adfd18fdd13d95454 data/minecraft/tags/items/wooden_pressure_plates.json
+ 21b7a80a99f8c6b8d73bc211f9a3385f77564418 data/aether/tags/items/moa_food_items.json
+ aec7b008832eba220d2bc2c19f1204b60804b938 data/aether/tags/items/moa_temptation_items.json
+-8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/obsidian_repairing.json
+ bf1b89eee43a1cda8f93a53fb8b575987ee995d1 data/c/tags/items/colorless_glass_panes.json
++8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/obsidian_repairing.json
+ 52681cd60313b99e14f78cec812916bae2179589 data/c/tags/items/ores.json
++44fb0354da3ff2f1b8ae4bca188ed7fb3acb6bf9 data/accessories/tags/items/aether_pendant.json
+ 3a4616e60bc5a5ee3eb1e30c0089403695c3a445 data/minecraft/tags/items/logs_that_burn.json
+ 1e0a03eba00c9ab35a60b2a09a38a1d8b427c300 data/aether/tags/items/aerclouds.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/ice_repairing.json
+@@ -119,20 +120,19 @@ fdb504a9b5dcd921e1b074103f4c5fc93dde460a data/aether/tags/items/dart_shooters.js
+ 659f7d467da041767129fa04d381834d69fafd44 data/c/tags/items/fence_gates.json
+ 52681cd60313b99e14f78cec812916bae2179589 data/c/tags/items/ore_rates/singular.json
+ 802bf42a2f00408926ca331108f951d3234d4fdd data/minecraft/tags/items/small_flowers.json
++21eed2b8db510eb669954a79b1282ed2eb4b64ef data/accessories/tags/items/aether_shield.json
+ 204eea47606e2258ba21d91d8e531ef9edcf67d4 data/aether/tags/items/darts.json
+ e9f08a579bf5779dc2cca99315042618a8b93c0b data/c/tags/items/gems.json
+ 78c68dc8aaa730c878b294aae2f535fa251ffd87 data/aether/tags/items/accessories_miscellaneous.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/lightning_repairing.json
+-10d43b920545c952ad58ebcdf75b541fa8158d17 data/trinket/tags/items/aether_ring.json
+ bbf0d0c17212568adf6c02381fe81bf1670bf7ff data/aether/tags/items/flying_cow_temptation_items.json
+ c25e552692a3df3c5175becab252003d745996b4 data/minecraft/tags/items/pickaxes.json
+-ce10f123f4b781379f2dc60cabb56424dbcaad09 data/trinket/tags/items/aether_gloves.json
+ 6fe4a49340456c6a206be8764872e00e9980adc7 data/minecraft/tags/items/trimmable_armor.json
+ b79247114c573fc2fc49993e393b5df60943be44 data/minecraft/tags/items/wooden_fences.json
+ 8e6f334dc158e2c64f959d17519dc1f3983a2fba data/aether/tags/items/skyroot_tool_crafting.json
+-21eed2b8db510eb669954a79b1282ed2eb4b64ef data/trinket/tags/items/aether_shield.json
+ bf6b24ea22c105214d88702fdf5139249196053c data/randomium/tags/items/blacklist.json
+ 3a4616e60bc5a5ee3eb1e30c0089403695c3a445 data/aether/tags/items/crafts_skyroot_planks.json
+ 4136c7f8ba6a9f3c22a15c97cfb26d949570aa60 data/minecraft/tags/items/leaves.json
+ 4e259e8e043674905b9d1b42a668f27840b23370 data/aether/tags/items/save_nbt_in_recipe.json
++bbaa16f1f02c4bd778235c087a7fbb29a46e1e32 data/accessories/tags/items/aether_accessory.json
+ 8a23702b05296c8af5014d6aa6e9265ded85c7d9 data/aether/tags/items/flaming_repairing.json
+diff --git a/src/generated/resources/.cache/99b5f3466166ea4c5d0a4d88164c82fc505f9594 b/src/generated/resources/.cache/99b5f3466166ea4c5d0a4d88164c82fc505f9594
+index 309ff6fdf..30ed6768e 100644
+--- a/src/generated/resources/.cache/99b5f3466166ea4c5d0a4d88164c82fc505f9594
++++ b/src/generated/resources/.cache/99b5f3466166ea4c5d0a4d88164c82fc505f9594
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.224811348	The Aether/Tags for minecraft:entity_type
++// 1.20.1	2024-05-18T16:11:29.107717038	The Aether/Tags for minecraft:entity_type
+ 7ee77da0ffe8e88661ec6fdcd247ee6a403bf093 data/minecraft/tags/entity_types/fall_damage_immune.json
+ e9ed86b994f5ab33ed3873208757d53bdb72b1d1 data/aether/tags/entity_types/no_ambrosium_drops.json
+ dcda1ce9b3509ec8d2baa71806af5f6a6fc88091 data/aether/tags/entity_types/deflectable_projectiles.json
+diff --git a/src/generated/resources/.cache/9c85d84ca19af7aa37a97310d8befe7856634f80 b/src/generated/resources/.cache/9c85d84ca19af7aa37a97310d8befe7856634f80
+index f56d3c896..9d25575ff 100644
+--- a/src/generated/resources/.cache/9c85d84ca19af7aa37a97310d8befe7856634f80
++++ b/src/generated/resources/.cache/9c85d84ca19af7aa37a97310d8befe7856634f80
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.225152648	The Aether/Registries
++// 1.20.1	2024-05-18T16:11:29.108306719	The Aether/Registries
+ 9efa0951dbf7192577eca2f3063910b4a7e6275c data/aether/damage_type/incineration.json
+ e3b0124a3eb31a495ab67da0d01b46bb94eb9ce0 data/aether/worldgen/placed_feature/gravitite_ore.json
+ ad9a38a87e4927b4b215fd473dbc459ed0a462bf data/aether/worldgen/configured_feature/trees_skyroot_and_golden_oak.json
+@@ -55,8 +55,8 @@ d5ba8cc497ab193e90aa5ffeba4b3f7dea211ac9 data/aether/worldgen/placed_feature/amb
+ 55746da79ad2e897b37f03c882d3e7ec21353c58 data/aether/worldgen/configured_feature/crystal_island.json
+ 6ed5f270a8e3594b1860c10348f5e200e59628c7 data/aether/worldgen/configured_feature/golden_oak_tree.json
+ 74c5f4f594d41486e3d8df1cbb87884d46154c50 data/aether/worldgen/structure_set/large_aercloud.json
+-18a65f6608e5a7aca8d2a54e9c2d73c87bc03dd6 data/aether/worldgen/configured_feature/aether_dirt_ore.json
+ e8a26e105aaec63ce90962277b1d0075eaf16a71 data/aether/worldgen/configured_feature/cold_aercloud.json
++18a65f6608e5a7aca8d2a54e9c2d73c87bc03dd6 data/aether/worldgen/configured_feature/aether_dirt_ore.json
+ 9b6cc923d61c3df795239987cd2811c8169750fd data/aether/worldgen/placed_feature/icestone_ore.json
+ c75a69a06a66ad5a2ab402d7bca52e3e58098362 data/aether/worldgen/configured_feature/grass_patch.json
+ 28f1d57ec7fe32c1e8c66c57b1c107a8fcaacacd data/aether/worldgen/placed_feature/aether_grass_bonemeal.json
+diff --git a/src/generated/resources/.cache/9ef1be04fa0f420d0d6a2cf5d04e95bff0f2c8fd b/src/generated/resources/.cache/9ef1be04fa0f420d0d6a2cf5d04e95bff0f2c8fd
+index 6ecde17fc..9c6c545e7 100644
+--- a/src/generated/resources/.cache/9ef1be04fa0f420d0d6a2cf5d04e95bff0f2c8fd
++++ b/src/generated/resources/.cache/9ef1be04fa0f420d0d6a2cf5d04e95bff0f2c8fd
+@@ -1,2 +1,2 @@
+-// 1.20.1	2024-04-23T15:10:26.225442769	The Aether/Tags for minecraft:worldgen/structure
++// 1.20.1	2024-05-18T16:11:29.108823391	The Aether/Tags for minecraft:worldgen/structure
+ 91beaf89bf9b0f0835d67489e8fd5beb85c7e924 data/aether/tags/worldgen/structure/dungeons.json
+diff --git a/src/generated/resources/.cache/af866454f5cce05f0e3ae1165414bdc2e33c9e41 b/src/generated/resources/.cache/af866454f5cce05f0e3ae1165414bdc2e33c9e41
+index 3a14a8630..d8223097f 100644
+--- a/src/generated/resources/.cache/af866454f5cce05f0e3ae1165414bdc2e33c9e41
++++ b/src/generated/resources/.cache/af866454f5cce05f0e3ae1165414bdc2e33c9e41
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.224498387	The Aether/Tags for minecraft:block
++// 1.20.1	2024-05-18T16:11:29.107167337	The Aether/Tags for minecraft:block
+ 5e59b347b4fa8b1c34da648d419b6ca0a3878576 data/aether/tags/blocks/allowed_flammables.json
+ aa0a6d63826a9b02250f24b91b7e9d2ba4149a87 data/minecraft/tags/blocks/stone_buttons.json
+ 04ce28939027939297fb6cc29a3d9644a27bc603 data/aether/tags/blocks/ruined_portal_ground_replaceable.json
+diff --git a/src/generated/resources/.cache/ca84b4fa1bcd1e882aac79d1d1ac32a8ec1427ad b/src/generated/resources/.cache/ca84b4fa1bcd1e882aac79d1d1ac32a8ec1427ad
+index ced273a23..9cc3c52f7 100644
+--- a/src/generated/resources/.cache/ca84b4fa1bcd1e882aac79d1d1ac32a8ec1427ad
++++ b/src/generated/resources/.cache/ca84b4fa1bcd1e882aac79d1d1ac32a8ec1427ad
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.225030258	The Aether/Global Loot Modifiers : aether
++// 1.20.1	2024-05-18T16:11:29.108108919	The Aether/Global Loot Modifiers : aether
+ d37a4a85084a210c08946033b23eea2a8e148b79 data/aether/loot_modifiers/gloves_loot_leather.json
+ 285e0ac500bdf69974bfac3b7c0a1a33a430ed15 data/aether/loot_modifiers/enchanted_grass_berry_bush.json
+ 6a86ae4ca8874a098049e6e995e624aac0634d5b data/aether/loot_modifiers/gloves_loot_chain.json
+diff --git a/src/generated/resources/.cache/dc814d2795cfdd214b4bf9194a868fd7d4e89c76 b/src/generated/resources/.cache/dc814d2795cfdd214b4bf9194a868fd7d4e89c76
+index bf6ef061b..3a42565a3 100644
+--- a/src/generated/resources/.cache/dc814d2795cfdd214b4bf9194a868fd7d4e89c76
++++ b/src/generated/resources/.cache/dc814d2795cfdd214b4bf9194a868fd7d4e89c76
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.223525435	The Aether/Tags for minecraft:damage_type
++// 1.20.1	2024-05-18T16:11:29.104575422	The Aether/Tags for minecraft:damage_type
+ 03065e1efb58ae2c0ec7be22b7cadcc4517464a5 data/aether/tags/damage_type/is_cold.json
+ 9e4b22cf981bb3c1d4f00d13f1683274b1f633dc data/minecraft/tags/damage_type/damages_helmet.json
+ 4d11edbbfd0924defa69530a1443f3285889345e data/minecraft/tags/damage_type/is_fire.json
+diff --git a/src/generated/resources/.cache/fc5df7fa75ae201187315b9c11cd203d8fb5d190 b/src/generated/resources/.cache/fc5df7fa75ae201187315b9c11cd203d8fb5d190
+index d453c15d3..9624d8c8e 100644
+--- a/src/generated/resources/.cache/fc5df7fa75ae201187315b9c11cd203d8fb5d190
++++ b/src/generated/resources/.cache/fc5df7fa75ae201187315b9c11cd203d8fb5d190
+@@ -1,4 +1,4 @@
+-// 1.20.1	2024-04-23T15:10:26.223606985	The Aether/Tags for minecraft:worldgen/biome
++// 1.20.1	2024-05-18T16:11:29.104756242	The Aether/Tags for minecraft:worldgen/biome
+ 4d54ff0856909e0e140684e00e27119fed166680 data/aether/tags/worldgen/biome/has_ruined_portal_standard.json
+ 865319e8a3894750d34019712bbb1e2efe54ee6b data/minecraft/tags/worldgen/biome/spawns_cold_variant_frogs.json
+ 865319e8a3894750d34019712bbb1e2efe54ee6b data/aether/tags/worldgen/biome/has_ruined_portal_aether.json
+diff --git a/src/main/java/com/aetherteam/aether/Aether.java b/src/main/java/com/aetherteam/aether/Aether.java
+index 2ce54e78f..31a5a3c3b 100644
+--- a/src/main/java/com/aetherteam/aether/Aether.java
++++ b/src/main/java/com/aetherteam/aether/Aether.java
+@@ -52,6 +52,8 @@ import com.google.common.reflect.Reflection;
+ import com.mojang.logging.LogUtils;
+ import io.github.fabricators_of_create.porting_lib.config.ConfigRegistry;
+ import io.github.fabricators_of_create.porting_lib.config.ConfigType;
++import io.github.fabricators_of_create.porting_lib.event.common.AddPackFindersEvent;
++import io.github.fabricators_of_create.porting_lib.resources.PathPackResources;
+ import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
+ import io.github.fabricators_of_create.porting_lib.util.LazyRegistrar;
+ import net.fabricmc.api.ModInitializer;
+@@ -86,9 +88,7 @@ public class Aether implements ModInitializer {
+ 
+     @Override
+     public void onInitialize() {
+-//        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+-//
+-//        modEventBus.addListener(this::packSetup);
++        AddPackFindersEvent.EVENT.register(this::packSetup);
+ 
+         LazyRegistrar<?>[] registers = {
+                 AetherBlocks.BLOCKS,
+@@ -187,244 +187,244 @@ public class Aether implements ModInitializer {
+         this.registerComposting();
+     }
+ 
+-//    public void packSetup(AddPackFindersEvent event) { TODO: PORT
+-//        // Resource Packs
+-//        this.setupReleasePack(event);
+-//        this.setupBetaPack(event);
+-//        this.setupCTMFixPack(event);
+-//        this.setupTipsPack(event);
+-//        this.setupColorblindPack(event);
+-//
+-//        // Data Packs
+-//        this.setupAccessoriesPack(event);
+-//        this.setupCuriosOverridePack(event);
+-//        this.setupTemporaryFreezingPack(event);
+-//        this.setupRuinedPortalPack(event);
+-//    }
+-//
+-//    /**
+-//     * A built-in resource pack for programmer art based on the 1.2.5 version of the mod.
+-//     */
+-//    private void setupReleasePack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/classic_125");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, false, resourcePath);
+-//            this.createCombinedPack(event, resourcePath, pack, "builtin/aether_125_art", "pack.aether.125.title", "pack.aether.125.description");
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in resource pack for programmer art based on the b1.7.3 version of the mod.
+-//     */
+-//    private void setupBetaPack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/classic_b173");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, false, resourcePath);
+-//            this.createCombinedPack(event, resourcePath, pack, "builtin/aether_b173_art", "pack.aether.b173.title", "pack.aether.b173.description");
+-//        }
+-//    }
+-//
+-//    /**
+-//     * Creates a built-in resource pack that combines asset files from two different locations.
+-//     * @param sourcePath The {@link Path} of the non-base assets.
+-//     * @param pack The {@link PathPackResources} that handles the non-base asset path for the resource pack.
+-//     * @param name The {@link String} internal name of the resource pack.
+-//     * @param title The {@link String} title of the resource pack.
+-//     * @param description The {@link String} description of the resource pack.
+-//     */
+-//    private void createCombinedPack(AddPackFindersEvent event, Path sourcePath, PathPackResources pack, String name, String title, String description) {
+-//        Path baseResourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).getFile().findResource("packs/classic_base");
+-//        PathPackResources basePack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + baseResourcePath, false, baseResourcePath);
+-//        List<PathPackResources> mergedPacks = List.of(pack, basePack);
+-//        Pack.ResourcesSupplier resourcesSupplier = (string) -> new CombinedPackResources(name, new PackMetadataSection(Component.translatable(description), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES)), mergedPacks, sourcePath);
+-//        Pack.Info info = Pack.readPackInfo(name, resourcesSupplier);
+-//        if (info != null) {
+-//            event.addRepositorySource((source) ->
+-//                source.accept(Pack.create(
+-//                    name,
+-//                    Component.translatable(title),
+-//                    false,
+-//                    resourcesSupplier,
+-//                    info,
+-//                    PackType.CLIENT_RESOURCES,
+-//                    Pack.Position.TOP,
+-//                    false,
+-//                    PackSource.BUILT_IN)
+-//                ));
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in resource pack to change the model of Quicksoil Glass Panes when using CTM, as CTM's connected textures won't properly work with the normal Quicksoil Glass Pane model.<br><br>
+-//     * The pack is loaded and automatically applied if CTM is installed.
+-//     */
+-//    private void setupCTMFixPack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.CLIENT_RESOURCES && ModList.get().isLoaded("ctm")) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/ctm_fix");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, true, resourcePath);
+-//            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.ctm.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
+-//            event.addRepositorySource((source) ->
+-//                source.accept(Pack.create(
+-//                "builtin/aether_ctm_fix",
+-//                    Component.translatable("pack.aether.ctm.title"),
+-//                    true,
+-//                    (string) -> pack,
+-//                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(PackType.SERVER_DATA), metadata.getPackFormat(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(), pack.isHidden()),
+-//                    PackType.CLIENT_RESOURCES,
+-//                    Pack.Position.TOP,
+-//                    false,
+-//                    PackSource.BUILT_IN)
+-//                )
+-//            );
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in resource pack to include Pro Tips messages in Tips' UI.<br><br>
+-//     * The pack is loaded and automatically applied if Tips is installed through {@link AetherClient#autoApplyPacks()}.
+-//     */
+-//    private void setupTipsPack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.CLIENT_RESOURCES && ModList.get().isLoaded("tipsmod")) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/tips");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, true, resourcePath);
+-//            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.tips.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
+-//            event.addRepositorySource((source) ->
+-//                    source.accept(Pack.create(
+-//                            "builtin/aether_tips",
+-//                            Component.translatable("pack.aether.tips.title"),
+-//                            false,
+-//                            (string) -> pack,
+-//                            new Pack.Info(metadata.getDescription(), metadata.getPackFormat(PackType.SERVER_DATA), metadata.getPackFormat(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(), pack.isHidden()),
+-//                            PackType.CLIENT_RESOURCES,
+-//                            Pack.Position.TOP,
+-//                            false,
+-//                            PackSource.BUILT_IN)
+-//                    )
+-//            );
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in resource pack to change textures for color blindness accessibility.
+-//     */
+-//    private void setupColorblindPack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/colorblind");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, true, resourcePath);
+-//            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.colorblind.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
+-//            event.addRepositorySource((source) ->
+-//                source.accept(Pack.create(
+-//                    "builtin/aether_colorblind",
+-//                    Component.translatable("pack.aether.colorblind.title"),
+-//                    false,
+-//                    (string) -> pack,
+-//                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(PackType.SERVER_DATA), metadata.getPackFormat(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(), pack.isHidden()),
+-//                    PackType.CLIENT_RESOURCES,
+-//                    Pack.Position.TOP,
+-//                    false,
+-//                    PackSource.BUILT_IN)
+-//                )
+-//            );
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in data pack to set up the default slots for Curios.<br><br>
+-//     * The pack is loaded and automatically applied if the {@link AetherConfig.Common#use_curios_menu} config isn't enabled.
+-//     */
+-//    private void setupAccessoriesPack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.SERVER_DATA && !AetherConfig.COMMON.use_curios_menu.get()) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/accessories");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, true, resourcePath);
+-//            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.accessories.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+-//            event.addRepositorySource((source) ->
+-//                    source.accept(Pack.create(
+-//                            "builtin/aether_accessories",
+-//                            Component.translatable("pack.aether.accessories.title"),
+-//                            true,
+-//                            (string) -> pack,
+-//                            new Pack.Info(metadata.getDescription(), metadata.getPackFormat(PackType.SERVER_DATA), metadata.getPackFormat(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(), pack.isHidden()),
+-//                            PackType.SERVER_DATA,
+-//                            Pack.Position.TOP,
+-//                            false,
+-//                            PackSource.BUILT_IN)
+-//                    )
+-//            );
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in data pack to empty the Aether's curio slot tags and use the default curio slot tags instead, as well as register the default Curios slots.<br><br>
+-//     * The pack is loaded and automatically applied if the {@link AetherConfig.Common#use_curios_menu} config is enabled.
+-//     */
+-//    private void setupCuriosOverridePack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.SERVER_DATA && AetherConfig.COMMON.use_curios_menu.get()) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/curios_override");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, true, resourcePath);
+-//            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.curios.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+-//            event.addRepositorySource((source) ->
+-//                source.accept(Pack.create(
+-//                    "builtin/aether_curios_override",
+-//                    Component.translatable("pack.aether.curios.title"),
+-//                    true,
+-//                    (string) -> pack,
+-//                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(PackType.SERVER_DATA), metadata.getPackFormat(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(), pack.isHidden()),
+-//                    PackType.SERVER_DATA,
+-//                    Pack.Position.TOP,
+-//                    false,
+-//                    PackSource.BUILT_IN)
+-//                )
+-//            );
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in data pack to make ice accessories create temporary blocks instead of permanent blocks when freezing liquids.
+-//     */
+-//    private void setupTemporaryFreezingPack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.SERVER_DATA) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/temporary_freezing");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, true, resourcePath);
+-//            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.freezing.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+-//            event.addRepositorySource((source) ->
+-//                source.accept(Pack.create(
+-//                    "builtin/aether_temporary_freezing",
+-//                    Component.translatable("pack.aether.freezing.title"),
+-//                    false,
+-//                    (string) -> pack,
+-//                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(PackType.SERVER_DATA), metadata.getPackFormat(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(), pack.isHidden()),
+-//                    PackType.SERVER_DATA,
+-//                    Pack.Position.TOP,
+-//                    false,
+-//                    create(decorateWithSource("pack.source.builtin"), AetherConfig.COMMON.add_temporary_freezing_automatically.get()))
+-//                )
+-//            );
+-//        }
+-//    }
+-//
+-//    /**
+-//     * A built-in data pack for generating ruined Aether Portals.
+-//     */
+-//    private void setupRuinedPortalPack(AddPackFindersEvent event) {
+-//        if (event.getPackType() == PackType.SERVER_DATA) {
+-//            Path resourcePath = ModList.get().getModFileById(Aether.MODID).getFile().findResource("packs/ruined_portal");
+-//            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(Aether.MODID).getFile().getFileName() + ":" + resourcePath, true, resourcePath);
+-//            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.ruined_portal.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+-//            event.addRepositorySource((source) ->
+-//                    source.accept(Pack.create(
+-//                            "builtin/aether_ruined_portal",
+-//                            Component.translatable("pack.aether.ruined_portal.title"),
+-//                            false,
+-//                            (string) -> pack,
+-//                            new Pack.Info(metadata.getDescription(), metadata.getPackFormat(PackType.SERVER_DATA), metadata.getPackFormat(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(), pack.isHidden()),
+-//                            PackType.SERVER_DATA,
+-//                            Pack.Position.TOP,
+-//                            false,
+-//                            create(decorateWithSource("pack.source.builtin"), AetherConfig.COMMON.add_ruined_portal_automatically.get()))
+-//                    )
+-//            );
+-//        }
+-//    }
++    public void packSetup(AddPackFindersEvent event) {
++        // Resource Packs
++        this.setupReleasePack(event);
++        this.setupBetaPack(event);
++        this.setupCTMFixPack(event);
++        this.setupTipsPack(event);
++        this.setupColorblindPack(event);
++
++        // Data Packs
++        this.setupAccessoriesPack(event);
++        this.setupCuriosOverridePack(event);
++        this.setupTemporaryFreezingPack(event);
++        this.setupRuinedPortalPack(event);
++    }
++
++    /**
++     * A built-in resource pack for programmer art based on the 1.2.5 version of the mod.
++     */
++    private void setupReleasePack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/classic_125").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, false, resourcePath);
++            this.createCombinedPack(event, resourcePath, pack, "builtin/aether_125_art", "pack.aether.125.title", "pack.aether.125.description");
++        }
++    }
++
++    /**
++     * A built-in resource pack for programmer art based on the b1.7.3 version of the mod.
++     */
++    private void setupBetaPack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/classic_b173").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, false, resourcePath);
++            this.createCombinedPack(event, resourcePath, pack, "builtin/aether_b173_art", "pack.aether.b173.title", "pack.aether.b173.description");
++        }
++    }
++
++    /**
++     * Creates a built-in resource pack that combines asset files from two different locations.
++     * @param sourcePath The {@link Path} of the non-base assets.
++     * @param pack The {@link PathPackResources} that handles the non-base asset path for the resource pack.
++     * @param name The {@link String} internal name of the resource pack.
++     * @param title The {@link String} title of the resource pack.
++     * @param description The {@link String} description of the resource pack.
++     */
++    private void createCombinedPack(AddPackFindersEvent event, Path sourcePath, PathPackResources pack, String name, String title, String description) {
++        Path baseResourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/classic_base").orElseThrow();
++        PathPackResources basePack = new PathPackResources(Aether.MODID + ":" + baseResourcePath, false, baseResourcePath);
++        List<PathPackResources> mergedPacks = List.of(pack, basePack);
++        Pack.ResourcesSupplier resourcesSupplier = (string) -> new CombinedPackResources(name, new PackMetadataSection(Component.translatable(description), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES)), mergedPacks, sourcePath);
++        Pack.Info info = Pack.readPackInfo(name, resourcesSupplier);
++        if (info != null) {
++            event.addRepositorySource((source) ->
++                source.accept(Pack.create(
++                    name,
++                    Component.translatable(title),
++                    false,
++                    resourcesSupplier,
++                    info,
++                    PackType.CLIENT_RESOURCES,
++                    Pack.Position.TOP,
++                    false,
++                    PackSource.BUILT_IN)
++                ));
++        }
++    }
++
++    /**
++     * A built-in resource pack to change the model of Quicksoil Glass Panes when using CTM, as CTM's connected textures won't properly work with the normal Quicksoil Glass Pane model.<br><br>
++     * The pack is loaded and automatically applied if CTM is installed.
++     */
++    private void setupCTMFixPack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.CLIENT_RESOURCES && FabricLoader.getInstance().isModLoaded("ctm")) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/ctm_fix").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, true, resourcePath);
++            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.ctm.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
++            event.addRepositorySource((source) ->
++                source.accept(Pack.create(
++                "builtin/aether_ctm_fix",
++                    Component.translatable("pack.aether.ctm.title"),
++                    true,
++                    (string) -> pack,
++                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(), FeatureFlagSet.of()),
++                    PackType.CLIENT_RESOURCES,
++                    Pack.Position.TOP,
++                    false,
++                    PackSource.BUILT_IN)
++                )
++            );
++        }
++    }
++
++    /**
++     * A built-in resource pack to include Pro Tips messages in Tips' UI.<br><br>
++     * The pack is loaded and automatically applied if Tips is installed through {@link AetherClient#autoApplyPacks()}.
++     */
++    private void setupTipsPack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.CLIENT_RESOURCES && FabricLoader.getInstance().isModLoaded("tipsmod")) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/tips").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, true, resourcePath);
++            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.tips.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
++            event.addRepositorySource((source) ->
++                    source.accept(Pack.create(
++                            "builtin/aether_tips",
++                            Component.translatable("pack.aether.tips.title"),
++                            false,
++                            (string) -> pack,
++                            new Pack.Info(metadata.getDescription(), metadata.getPackFormat(), FeatureFlagSet.of()),
++                            PackType.CLIENT_RESOURCES,
++                            Pack.Position.TOP,
++                            false,
++                            PackSource.BUILT_IN)
++                    )
++            );
++        }
++    }
++
++    /**
++     * A built-in resource pack to change textures for color blindness accessibility.
++     */
++    private void setupColorblindPack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/colorblind").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, true, resourcePath);
++            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.colorblind.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
++            event.addRepositorySource((source) ->
++                source.accept(Pack.create(
++                    "builtin/aether_colorblind",
++                    Component.translatable("pack.aether.colorblind.title"),
++                    false,
++                    (string) -> pack,
++                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(), FeatureFlagSet.of()),
++                    PackType.CLIENT_RESOURCES,
++                    Pack.Position.TOP,
++                    false,
++                    PackSource.BUILT_IN)
++                )
++            );
++        }
++    }
++
++    /**
++     * A built-in data pack to set up the default slots for Curios.<br><br>
++     * The pack is loaded and automatically applied if the {@link AetherConfig.Common#use_curios_menu} config isn't enabled.
++     */
++    private void setupAccessoriesPack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.SERVER_DATA && !AetherConfig.COMMON.use_curios_menu.get()) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/accessories").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, true, resourcePath);
++            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.accessories.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
++            event.addRepositorySource((source) ->
++                    source.accept(Pack.create(
++                            "builtin/aether_accessories",
++                            Component.translatable("pack.aether.accessories.title"),
++                            true,
++                            (string) -> pack,
++                            new Pack.Info(metadata.getDescription(), metadata.getPackFormat(), FeatureFlagSet.of()),
++                            PackType.SERVER_DATA,
++                            Pack.Position.TOP,
++                            false,
++                            PackSource.BUILT_IN)
++                    )
++            );
++        }
++    }
++
++    /**
++     * A built-in data pack to empty the Aether's curio slot tags and use the default curio slot tags instead, as well as register the default Curios slots.<br><br>
++     * The pack is loaded and automatically applied if the {@link AetherConfig.Common#use_curios_menu} config is enabled.
++     */
++    private void setupCuriosOverridePack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.SERVER_DATA && AetherConfig.COMMON.use_curios_menu.get()) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/curios_override").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, true, resourcePath);
++            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.curios.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
++            event.addRepositorySource((source) ->
++                source.accept(Pack.create(
++                    "builtin/aether_curios_override",
++                    Component.translatable("pack.aether.curios.title"),
++                    true,
++                    (string) -> pack,
++                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(), FeatureFlagSet.of()),
++                    PackType.SERVER_DATA,
++                    Pack.Position.TOP,
++                    false,
++                    PackSource.BUILT_IN)
++                )
++            );
++        }
++    }
++
++    /**
++     * A built-in data pack to make ice accessories create temporary blocks instead of permanent blocks when freezing liquids.
++     */
++    private void setupTemporaryFreezingPack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.SERVER_DATA) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/temporary_freezing").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, true, resourcePath);
++            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.freezing.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
++            event.addRepositorySource((source) ->
++                source.accept(Pack.create(
++                    "builtin/aether_temporary_freezing",
++                    Component.translatable("pack.aether.freezing.title"),
++                    false,
++                    (string) -> pack,
++                    new Pack.Info(metadata.getDescription(), metadata.getPackFormat(), FeatureFlagSet.of()),
++                    PackType.SERVER_DATA,
++                    Pack.Position.TOP,
++                    false,
++                    create(decorateWithSource("pack.source.builtin"), AetherConfig.COMMON.add_temporary_freezing_automatically.get()))
++                )
++            );
++        }
++    }
++
++    /**
++     * A built-in data pack for generating ruined Aether Portals.
++     */
++    private void setupRuinedPortalPack(AddPackFindersEvent event) {
++        if (event.getPackType() == PackType.SERVER_DATA) {
++            Path resourcePath = FabricLoader.getInstance().getModContainer(Aether.MODID).orElseThrow().findPath("packs/ruined_portal").orElseThrow();
++            PathPackResources pack = new PathPackResources(Aether.MODID + ":" + resourcePath, true, resourcePath);
++            PackMetadataSection metadata = new PackMetadataSection(Component.translatable("pack.aether.ruined_portal.description"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
++            event.addRepositorySource((source) ->
++                    source.accept(Pack.create(
++                            "builtin/aether_ruined_portal",
++                            Component.translatable("pack.aether.ruined_portal.title"),
++                            false,
++                            (string) -> pack,
++                            new Pack.Info(metadata.getDescription(), metadata.getPackFormat(), FeatureFlagSet.of()),
++                            PackType.SERVER_DATA,
++                            Pack.Position.TOP,
++                            false,
++                            create(decorateWithSource("pack.source.builtin"), AetherConfig.COMMON.add_ruined_portal_automatically.get()))
++                    )
++            );
++        }
++    }
+ 
+     /**
+      * [CODE COPY] - {@link PackSource#create(UnaryOperator, boolean)}.
+diff --git a/src/main/java/com/aetherteam/aether/block/AetherBlocks.java b/src/main/java/com/aetherteam/aether/block/AetherBlocks.java
+index 771b147fe..5e0c242de 100644
+--- a/src/main/java/com/aetherteam/aether/block/AetherBlocks.java
++++ b/src/main/java/com/aetherteam/aether/block/AetherBlocks.java
+@@ -20,6 +20,8 @@ import com.aetherteam.aether.item.block.BurnableBlockItem;
+ import com.aetherteam.aether.mixin.mixins.common.accessor.FireBlockAccessor;
+ import com.aetherteam.aether.world.treegrower.GoldenOakTree;
+ import com.aetherteam.aether.world.treegrower.SkyrootTree;
++import io.github.fabricators_of_create.porting_lib.fluids.FluidInteractionRegistry;
++import io.github.fabricators_of_create.porting_lib.fluids.PortingLibFluids;
+ import io.github.fabricators_of_create.porting_lib.util.LazyRegistrar;
+ import io.github.fabricators_of_create.porting_lib.util.RegistryObject;
+ import net.minecraft.core.BlockPos;
+@@ -278,10 +280,10 @@ public class AetherBlocks {
+     }
+ 
+     public static void registerFluidInteractions() {
+-//        FluidInteractionRegistry.addInteraction(ForgeMod.WATER_TYPE.get(), new FluidInteractionRegistry.InteractionInformation( TODO: PORT
+-//                (level, currentPos, relativePos, currentState) -> level.getBlockState(currentPos.below()).is(AetherBlocks.QUICKSOIL.get()) && level.getBlockState(relativePos).is(Blocks.MAGMA_BLOCK),
+-//                AetherBlocks.HOLYSTONE.get().defaultBlockState()
+-//        ));
++        FluidInteractionRegistry.addInteraction(PortingLibFluids.WATER_TYPE, new FluidInteractionRegistry.InteractionInformation(
++                (level, currentPos, relativePos, currentState) -> level.getBlockState(currentPos.below()).is(AetherBlocks.QUICKSOIL.get()) && level.getBlockState(relativePos).is(Blocks.MAGMA_BLOCK),
++                AetherBlocks.HOLYSTONE.get().defaultBlockState()
++        ));
+     }
+ 
+     public static void registerWoodTypes() {
+diff --git a/src/main/java/com/aetherteam/aether/block/dispenser/AetherDispenseBehaviors.java b/src/main/java/com/aetherteam/aether/block/dispenser/AetherDispenseBehaviors.java
+index 029684219..34e68be18 100644
+--- a/src/main/java/com/aetherteam/aether/block/dispenser/AetherDispenseBehaviors.java
++++ b/src/main/java/com/aetherteam/aether/block/dispenser/AetherDispenseBehaviors.java
+@@ -72,71 +72,71 @@ public class AetherDispenseBehaviors {
+             LivingEntity livingEntity = list.get(0);
+             ItemStack itemStack = stack.split(1);
+             if (!(livingEntity instanceof ArmorStand armorStand)) {
+-//                CuriosApi.getCurio(itemStack).ifPresent(curio -> CuriosApi.getCuriosInventory(livingEntity).ifPresent(handler -> { TODO: PORT
+-//                    Map<String, ICurioStacksHandler> curios = handler.getCurios();
+-//                    for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) { // Curios entries.
+-//                        if (List.of(AccessoriesMenu.AETHER_IDENTIFIERS).contains(entry.getKey())) { // Check if Curios entries match the ones in the Aether accessories menu.
+-//                            IDynamicStackHandler stackHandler = entry.getValue().getStacks();
+-//                            for (int i = 0; i < stackHandler.getSlots(); i++) {
+-//                                String id = entry.getKey();
+-//                                SlotContext slotContext = new SlotContext(id, livingEntity, i, false, true); // Get slot that a Curio entry has.
+-//                                if (curio.canEquip(slotContext) && curio.canEquipFromUse(slotContext)) {
+-//                                    ItemStack slotStack = stackHandler.getStackInSlot(i);
+-//                                    if (slotStack.isEmpty()) { // Check if Curio slot is empty.
+-//                                        stackHandler.setStackInSlot(i, itemStack.copy()); // Put copy of stack from dispenser into slot.
+-//                                        int count = itemStack.getCount();
+-//                                        itemStack.shrink(count); // Shrink stack in dispenser.
+-//                                        if (livingEntity instanceof Mob mob && EntityHooks.canMobSpawnWithAccessories(mob)) {
+-//                                            MobAccessory.get(mob).ifPresent((accessoryMob) -> {
+-//                                                accessoryMob.setGuaranteedDrop(id);
+-//                                                accessoryMob.getMob().setPersistenceRequired();
+-//                                            });
+-//                                        }
+-//                                    }
+-//                                }
+-//                            }
+-//                        }
+-//                    }
+-//                }));
++            //    CuriosApi.getCurio(itemStack).ifPresent(curio -> CuriosApi.getCuriosInventory(livingEntity).ifPresent(handler -> { TODO: PORT
++            //        Map<String, ICurioStacksHandler> curios = handler.getCurios();
++            //        for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) { // Curios entries.
++            //            if (List.of(AccessoriesMenu.AETHER_IDENTIFIERS).contains(entry.getKey())) { // Check if Curios entries match the ones in the Aether accessories menu.
++            //                IDynamicStackHandler stackHandler = entry.getValue().getStacks();
++            //                for (int i = 0; i < stackHandler.getSlots(); i++) {
++            //                    String id = entry.getKey();
++            //                    SlotContext slotContext = new SlotContext(id, livingEntity, i, false, true); // Get slot that a Curio entry has.
++            //                    if (curio.canEquip(slotContext) && curio.canEquipFromUse(slotContext)) {
++            //                        ItemStack slotStack = stackHandler.getStackInSlot(i);
++            //                        if (slotStack.isEmpty()) { // Check if Curio slot is empty.
++            //                            stackHandler.setStackInSlot(i, itemStack.copy()); // Put copy of stack from dispenser into slot.
++            //                            int count = itemStack.getCount();
++            //                            itemStack.shrink(count); // Shrink stack in dispenser.
++            //                            if (livingEntity instanceof Mob mob && EntityHooks.canMobSpawnWithAccessories(mob)) {
++            //                                MobAccessory.get(mob).ifPresent((accessoryMob) -> {
++            //                                    accessoryMob.setGuaranteedDrop(id);
++            //                                    accessoryMob.getMob().setPersistenceRequired();
++            //                                });
++            //                            }
++            //                        }
++            //                    }
++            //                }
++            //            }
++            //        }
++            //    }));
+             } else {
+-//                CuriosApi.getCurio(itemStack).ifPresent(curio -> CuriosApi.getCuriosInventory(livingEntity).ifPresent(handler -> { TODO: PORT
+-//                    if (itemStack.is(AetherTags.Items.ACCESSORIES)) {
+-//                        String identifier = "";
+-//                        if (itemStack.getItem() instanceof GlovesItem) {
+-//                            identifier = AetherConfig.COMMON.use_curios_menu.get() ? "hands" : "aether_gloves";
+-//                        } else if (itemStack.getItem() instanceof PendantItem) {
+-//                            identifier = AetherConfig.COMMON.use_curios_menu.get() ? "necklace" : "aether_pendant";
+-//                        } else if (itemStack.getItem() instanceof CapeItem) {
+-//                            identifier = AetherConfig.COMMON.use_curios_menu.get() ? "back" : "aether_cape";
+-//                        } else if (itemStack.getItem() instanceof ShieldOfRepulsionItem) {
+-//                            identifier = AetherConfig.COMMON.use_curios_menu.get() ? "body" : "aether_shield";
+-//                        }
+-//                        Optional<ICurioStacksHandler> stacksHandler = handler.getStacksHandler(identifier);
+-//                        if (stacksHandler.isPresent()) {
+-//                            IDynamicStackHandler stackHandler = stacksHandler.get().getCosmeticStacks();
+-//                            if (0 < stackHandler.getSlots()) {
+-//                                if (stackHandler.getStackInSlot(0).isEmpty()) {
+-//                                    if (itemStack.getItem() instanceof AccessoryItem accessoryItem) {
+-//                                        SlotContext slotContext = new SlotContext(identifier, armorStand, 0, true, true);
+-//                                        if (accessoryItem.canEquip(slotContext, itemStack)) {
+-//                                            stackHandler.setStackInSlot(0, itemStack.copy());
+-//                                            if (accessoryItem instanceof GlovesItem glovesItem) {
+-//                                                armorStand.level().playSound(null, armorStand.blockPosition(), glovesItem.getEquipSound(slotContext, itemStack).soundEvent(), armorStand.getSoundSource(), 1, 1);
+-//                                            } else if (accessoryItem instanceof PendantItem pendantItem) {
+-//                                                armorStand.level().playSound(null, armorStand.blockPosition(), pendantItem.getEquipSound(slotContext, itemStack).soundEvent(), armorStand.getSoundSource(), 1, 1);
+-//                                            } else {
+-//                                                armorStand.level().playSound(null, armorStand.blockPosition(), SoundEvents.ARMOR_EQUIP_GENERIC, armorStand.getSoundSource(), 1, 1);
+-//                                            }
+-//                                            if (identifier.equals("hands") || identifier.equals("aether_gloves")) {
+-//                                                armorStand.setShowArms(true);
+-//                                            }
+-//                                        }
+-//                                    }
+-//                                }
+-//                            }
+-//                        }
+-//                    }
+-//                }));
++            //    CuriosApi.getCurio(itemStack).ifPresent(curio -> CuriosApi.getCuriosInventory(livingEntity).ifPresent(handler -> { TODO: PORT
++            //        if (itemStack.is(AetherTags.Items.ACCESSORIES)) {
++            //            String identifier = "";
++            //            if (itemStack.getItem() instanceof GlovesItem) {
++            //                identifier = AetherConfig.COMMON.use_curios_menu.get() ? "hands" : "aether_gloves";
++            //            } else if (itemStack.getItem() instanceof PendantItem) {
++            //                identifier = AetherConfig.COMMON.use_curios_menu.get() ? "necklace" : "aether_pendant";
++            //            } else if (itemStack.getItem() instanceof CapeItem) {
++            //                identifier = AetherConfig.COMMON.use_curios_menu.get() ? "back" : "aether_cape";
++            //            } else if (itemStack.getItem() instanceof ShieldOfRepulsionItem) {
++            //                identifier = AetherConfig.COMMON.use_curios_menu.get() ? "body" : "aether_shield";
++            //            }
++            //            Optional<ICurioStacksHandler> stacksHandler = handler.getStacksHandler(identifier);
++            //            if (stacksHandler.isPresent()) {
++            //                IDynamicStackHandler stackHandler = stacksHandler.get().getCosmeticStacks();
++            //                if (0 < stackHandler.getSlots()) {
++            //                    if (stackHandler.getStackInSlot(0).isEmpty()) {
++            //                        if (itemStack.getItem() instanceof AccessoryItem accessoryItem) {
++            //                            SlotContext slotContext = new SlotContext(identifier, armorStand, 0, true, true);
++            //                            if (accessoryItem.canEquip(slotContext, itemStack)) {
++            //                                stackHandler.setStackInSlot(0, itemStack.copy());
++            //                                if (accessoryItem instanceof GlovesItem glovesItem) {
++            //                                    armorStand.level().playSound(null, armorStand.blockPosition(), glovesItem.getEquipSound(slotContext, itemStack).soundEvent(), armorStand.getSoundSource(), 1, 1);
++            //                                } else if (accessoryItem instanceof PendantItem pendantItem) {
++            //                                    armorStand.level().playSound(null, armorStand.blockPosition(), pendantItem.getEquipSound(slotContext, itemStack).soundEvent(), armorStand.getSoundSource(), 1, 1);
++            //                                } else {
++            //                                    armorStand.level().playSound(null, armorStand.blockPosition(), SoundEvents.ARMOR_EQUIP_GENERIC, armorStand.getSoundSource(), 1, 1);
++            //                                }
++            //                                if (identifier.equals("hands") || identifier.equals("aether_gloves")) {
++            //                                    armorStand.setShowArms(true);
++            //                                }
++            //                            }
++            //                        }
++            //                    }
++            //                }
++            //            }
++            //        }
++            //    }));
+             }
+             return true;
+         }
+diff --git a/src/main/java/com/aetherteam/aether/client/AetherClient.java b/src/main/java/com/aetherteam/aether/client/AetherClient.java
+index 5ca71d9a0..471a5b508 100644
+--- a/src/main/java/com/aetherteam/aether/client/AetherClient.java
++++ b/src/main/java/com/aetherteam/aether/client/AetherClient.java
+@@ -85,7 +85,7 @@ public class AetherClient implements ClientModInitializer {
+     }
+ 
+     public static void registerGuiFactories() {
+-//        MenuScreens.register(AetherMenuTypes.ACCESSORIES.get(), AccessoriesScreen::new);
++        MenuScreens.register(AetherMenuTypes.ACCESSORIES.get(), AccessoriesScreen::new);
+         MenuScreens.register(AetherMenuTypes.BOOK_OF_LORE.get(), LoreBookScreen::new);
+         MenuScreens.register(AetherMenuTypes.ALTAR.get(), AltarScreen::new);
+         MenuScreens.register(AetherMenuTypes.FREEZER.get(), FreezerScreen::new);
+diff --git a/src/main/java/com/aetherteam/aether/client/event/hooks/AudioHooks.java b/src/main/java/com/aetherteam/aether/client/event/hooks/AudioHooks.java
+index f83fcec0c..5dc9af92e 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/hooks/AudioHooks.java
++++ b/src/main/java/com/aetherteam/aether/client/event/hooks/AudioHooks.java
+@@ -5,12 +5,13 @@ import com.aetherteam.aether.client.AetherMusicManager;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+ import net.minecraft.client.resources.sounds.SoundInstance;
++import net.minecraft.client.sounds.SoundEngine;
+ import net.minecraft.sounds.SoundSource;
+ 
+ public class AudioHooks {
+     /**
+      * Stops other music from playing over Aether music.
+-     * @see com.aetherteam.aether.client.event.listeners.AudioListener#onPlaySound(PlaySoundEvent)
++     * @see com.aetherteam.aether.client.event.listeners.AudioListener#onPlaySound(SoundEngine, SoundInstance, SoundInstance)
+      */
+     public static boolean shouldCancelSound(SoundInstance sound) {
+         if (!AetherConfig.CLIENT.disable_music_manager.get()) {
+@@ -35,7 +36,7 @@ public class AudioHooks {
+ 
+     /**
+      * Resets the music on respawn.
+-     * @see com.aetherteam.aether.client.event.listeners.AudioListener#onPlayerRespawn(ClientPlayerNetworkEvent.Clone)
++     * @see com.aetherteam.aether.client.event.listeners.AudioListener#onPlayerRespawn()
+      */
+     public static void stop() {
+         if (!AetherConfig.CLIENT.disable_music_manager.get()) {
+diff --git a/src/main/java/com/aetherteam/aether/client/event/hooks/GuiHooks.java b/src/main/java/com/aetherteam/aether/client/event/hooks/GuiHooks.java
+index 81db1bada..2876cebfc 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/hooks/GuiHooks.java
++++ b/src/main/java/com/aetherteam/aether/client/event/hooks/GuiHooks.java
+@@ -105,7 +105,7 @@ public class GuiHooks {
+      */
+     @Nullable
+     private static AbstractContainerScreen<?> canCreateAccessoryButtonForScreen(Screen screen) {
+-        if (screen instanceof InventoryScreen || /*screen instanceof CuriosScreen TODO: PORT ||*/ screen instanceof CreativeModeInventoryScreen || (screen instanceof AccessoriesScreen && shouldAddButton)) {
++        if (screen instanceof InventoryScreen || /* screen instanceof CuriosScreen TODO: PORT ||*/ screen instanceof CreativeModeInventoryScreen || (screen instanceof AccessoriesScreen && shouldAddButton)) {
+             return (AbstractContainerScreen<?>) screen;
+         } else if (screen instanceof AccessoriesScreen) {
+             shouldAddButton = true;
+@@ -117,7 +117,7 @@ public class GuiHooks {
+      * Sets up the buttons for the {@link MoaSkinsScreen} and the {@link AetherCustomizationsScreen} in a {@link GridLayout}.
+      * @param screen The parent {@link Screen}.
+      * @return The {@link GridLayout} holding the buttons.
+-     * @see com.aetherteam.aether.client.event.listeners.GuiListener#onGuiInitialize(ScreenEvent.Init.Post)
++     * @see com.aetherteam.aether.client.event.listeners.GuiListener#onGuiInitialize(Minecraft, Screen, int, int)
+      */
+     @Nullable
+     public static GridLayout setupPerksButtons(Screen screen) {
+@@ -179,7 +179,7 @@ public class GuiHooks {
+      * Generates and draws the Aether's trivia lines in various loading screens.
+      * @param screen The current {@link Screen}.
+      * @param guiGraphics The rendering {@link GuiGraphics}.
+-     * @see com.aetherteam.aether.client.event.listeners.GuiListener#onGuiDraw(ScreenEvent.Render.Post)
++     * @see com.aetherteam.aether.client.event.listeners.GuiListener#onGuiDraw(Screen, GuiGraphics, int, int, float)
+      */
+     public static void drawTrivia(Screen screen, GuiGraphics guiGraphics) {
+         generateTrivia(screen);
+diff --git a/src/main/java/com/aetherteam/aether/client/event/hooks/LevelClientHooks.java b/src/main/java/com/aetherteam/aether/client/event/hooks/LevelClientHooks.java
+index 3671dbc62..8fe4574f8 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/hooks/LevelClientHooks.java
++++ b/src/main/java/com/aetherteam/aether/client/event/hooks/LevelClientHooks.java
+@@ -8,9 +8,7 @@ import net.minecraft.client.Camera;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.multiplayer.ClientLevel;
+ import net.minecraft.client.player.LocalPlayer;
+-import net.minecraft.client.renderer.MultiBufferSource;
+-import net.minecraft.client.renderer.RenderBuffers;
+-import net.minecraft.client.renderer.RenderType;
++import net.minecraft.client.renderer.*;
+ import net.minecraft.client.renderer.culling.Frustum;
+ import net.minecraft.client.renderer.texture.OverlayTexture;
+ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+@@ -26,6 +24,8 @@ import org.joml.Matrix3f;
+ import org.joml.Matrix4f;
+ 
+ import org.jetbrains.annotations.Nullable;
++import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
++
+ import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.List;
+@@ -33,31 +33,31 @@ import java.util.List;
+ public class LevelClientHooks {
+     private static final HashMap<Integer, List<BlockPos>> positionsForTypes = new HashMap<>();
+ 
+-//    /** TODO: PORT
+-//     * [CODE COPY] - {@link ClientLevel#animateTick(int, int, int)}.
+-//     * Checks to set up positions and render overlays for dungeon blocks from whatever block item the player is holding.
+-//     * @see com.aetherteam.aether.client.event.listeners.LevelClientListener#onRenderLevelLast(RenderLevelStageEvent)
+-//     */
+-//    public static void renderDungeonBlockOverlays(RenderLevelStageEvent.Stage stage, PoseStack poseStack, Camera camera, Frustum frustum, Minecraft minecraft) {
+-//        if (stage == RenderLevelStageEvent.Stage.AFTER_PARTICLES && minecraft.level != null) {
+-//            LocalPlayer player = minecraft.player;
+-//            ClientLevel level = minecraft.level;
+-//            RenderBuffers renderBuffers = minecraft.renderBuffers();
+-//            int range = 32; // Range for how far the overlays can be rendered at.
+-//            if (player != null && player.isCreative()) {
+-//                BlockPos playerPos = player.blockPosition();
+-//                ItemStack stack = player.getMainHandItem();
+-//                int type = idForItem(stack); // Get an ID for the currently held dungeon block item.
+-//                if (type != -1) {
+-//                    updatePositions(playerPos, level, stack, range, type, false); // Check to add overlays to the map.
+-//                }
+-//                for (int i = 0; i < positionsForTypes.size(); i++) {
+-//                    renderOverlays(level, poseStack, renderBuffers, camera, frustum, i); // Render any overlays at positions in the map.
+-//                    updatePositions(playerPos, level, stack, range, i, true); // Check to remove overlays from the map.
+-//                }
+-//            }
+-//        }
+-//    }
++    /**
++     * [CODE COPY] - {@link ClientLevel#animateTick(int, int, int)}.
++     * Checks to set up positions and render overlays for dungeon blocks from whatever block item the player is holding.
++     * @see com.aetherteam.aether.mixin.mixins.client.fabric.LevelRendererMixin#renderDungeonBlockOverlays(PoseStack, float, long, boolean, Camera, GameRenderer, LightTexture, Matrix4f, CallbackInfo, Frustum)
++     */
++    public static void renderDungeonBlockOverlays(PoseStack poseStack, Camera camera, Frustum frustum, Minecraft minecraft) {
++        if (minecraft.level != null) {
++            LocalPlayer player = minecraft.player;
++            ClientLevel level = minecraft.level;
++            RenderBuffers renderBuffers = minecraft.renderBuffers();
++            int range = 32; // Range for how far the overlays can be rendered at.
++            if (player != null && player.isCreative()) {
++                BlockPos playerPos = player.blockPosition();
++                ItemStack stack = player.getMainHandItem();
++                int type = idForItem(stack); // Get an ID for the currently held dungeon block item.
++                if (type != -1) {
++                    updatePositions(playerPos, level, stack, range, type, false); // Check to add overlays to the map.
++                }
++                for (int i = 0; i < positionsForTypes.size(); i++) {
++                    renderOverlays(level, poseStack, renderBuffers, camera, frustum, i); // Render any overlays at positions in the map.
++                    updatePositions(playerPos, level, stack, range, i, true); // Check to remove overlays from the map.
++                }
++            }
++        }
++    }
+ 
+     /**
+      * [CODE COPY] - {@link ClientLevel#animateTick(int, int, int)}.
+diff --git a/src/main/java/com/aetherteam/aether/client/event/hooks/WorldPreviewHooks.java b/src/main/java/com/aetherteam/aether/client/event/hooks/WorldPreviewHooks.java
+index 6bb677ac7..5c9366a73 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/hooks/WorldPreviewHooks.java
++++ b/src/main/java/com/aetherteam/aether/client/event/hooks/WorldPreviewHooks.java
+@@ -4,6 +4,7 @@ import com.aetherteam.aether.AetherConfig;
+ import com.aetherteam.aether.client.AetherMusicManager;
+ import com.aetherteam.aether.client.WorldDisplayHelper;
+ import com.aetherteam.aether.mixin.mixins.client.accessor.EntityRendererAccessor;
++import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.gui.screens.PauseScreen;
+ import net.minecraft.client.gui.screens.Screen;
+@@ -37,22 +38,19 @@ public class WorldPreviewHooks {
+         return screen instanceof TitleScreen && AetherConfig.CLIENT.enable_world_preview.get() && Minecraft.getInstance().level == null;
+     }
+ 
+-//    /** TODO: PORT
+-//     * After the level is loaded for the world preview by other events, when it gets rendered then
+-//     * the panorama-style setup with the displayed menu is handled by {@link WorldDisplayHelper#setupLevelForDisplay()}.
+-//     * @param stage The {@link net.minecraftforge.client.event.RenderLevelStageEvent.Stage} of rendering.
+-//     * @see com.aetherteam.aether.client.event.listeners.WorldPreviewListener#onRenderLevelLast(RenderLevelStageEvent)
+-//     */
+-//    public static void renderMenuWithWorld(RenderLevelStageEvent.Stage stage) {
+-//        Minecraft minecraft = Minecraft.getInstance();
+-//        if (stage == RenderLevelStageEvent.Stage.AFTER_WEATHER) {
+-//            if (WorldDisplayHelper.isActive()) {
+-//                if (minecraft.screen == null || minecraft.screen instanceof PauseScreen) { // The menu can only be rendered if there is no screen or a PauseScreen when the level loads.
+-//                    WorldDisplayHelper.setupLevelForDisplay();
+-//                }
+-//            }
+-//        }
+-//    }
++    /**
++     * After the level is loaded for the world preview by other events, when it gets rendered then
++     * the panorama-style setup with the displayed menu is handled by {@link WorldDisplayHelper#setupLevelForDisplay()}.
++     * @see com.aetherteam.aether.client.event.listeners.WorldPreviewListener#onRenderLevelLast(WorldRenderContext)
++     */
++    public static void renderMenuWithWorld() {
++        Minecraft minecraft = Minecraft.getInstance();
++        if (WorldDisplayHelper.isActive()) {
++            if (minecraft.screen == null || minecraft.screen instanceof PauseScreen) { // The menu can only be rendered if there is no screen or a PauseScreen when the level loads.
++                WorldDisplayHelper.setupLevelForDisplay();
++            }
++        }
++    }
+ 
+     /**
+      * Handles how the world should be displayed for the world preview. Rendering, sounds, and music are allowed to tick, but nothing else is.
+diff --git a/src/main/java/com/aetherteam/aether/client/event/listeners/GuiListener.java b/src/main/java/com/aetherteam/aether/client/event/listeners/GuiListener.java
+index 4c4a5319b..4f28bc1c2 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/listeners/GuiListener.java
++++ b/src/main/java/com/aetherteam/aether/client/event/listeners/GuiListener.java
+@@ -1,45 +1,46 @@
+ package com.aetherteam.aether.client.event.listeners;
+ 
+-import com.aetherteam.aether.Aether;
+ import com.aetherteam.aether.client.event.hooks.GuiHooks;
+ import com.aetherteam.aether.client.gui.component.inventory.AccessoryButton;
+ import com.aetherteam.aether.client.gui.screen.inventory.AccessoriesScreen;
+ import io.github.fabricators_of_create.porting_lib.event.client.KeyInputCallback;
+ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
++import net.fabricmc.fabric.api.client.screen.v1.Screens;
+ import net.fabricmc.loader.api.FabricLoader;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.gui.GuiGraphics;
++import net.minecraft.client.gui.components.AbstractWidget;
+ import net.minecraft.client.gui.components.LerpingBossEvent;
+ import net.minecraft.client.gui.layouts.GridLayout;
+ import net.minecraft.client.gui.screens.Screen;
+ import net.minecraft.util.Tuple;
+ import net.minecraft.world.BossEvent;
+ 
++import java.util.List;
+ import java.util.UUID;
+ 
+ public class GuiListener {
+-//	/** TODO: PORT
+-//	 * @see AccessoriesScreen#getButtonOffset(Screen)
+-//	 * @see GuiHooks#setupAccessoryButton(Screen, Tuple)
+-//	 * @see GuiHooks#setupPerksButtons(Screen)
+-//	 */
+-//	@SubscribeEvent
+-//	public static void onGuiInitialize(ScreenEvent.Init.Post event) {
+-//		Screen screen = event.getScreen();
+-//		if (GuiHooks.isAccessoryButtonEnabled()) {
+-//			Tuple<Integer, Integer> offsets = AccessoriesScreen.getButtonOffset(screen);
+-//			AccessoryButton inventoryAccessoryButton = GuiHooks.setupAccessoryButton(screen, offsets);
+-//			if (inventoryAccessoryButton != null) {
+-//				event.addListener(inventoryAccessoryButton);
+-//			}
+-//		} else {
+-//			GridLayout layout = GuiHooks.setupPerksButtons(screen);
+-//			if (layout != null) {
+-//				layout.visitWidgets(event::addListener);
+-//			}
+-//		}
+-//	}
++	/**
++	 * @see AccessoriesScreen#getButtonOffset(Screen)
++	 * @see GuiHooks#setupAccessoryButton(Screen, Tuple)
++	 * @see GuiHooks#setupPerksButtons(Screen)
++	 */
++	public static void onGuiInitialize(Minecraft client, Screen screen, int scaledWidth, int scaledHeight) {
++		List<AbstractWidget> buttons = Screens.getButtons(screen);
++		if (GuiHooks.isAccessoryButtonEnabled()) {
++			Tuple<Integer, Integer> offsets = AccessoriesScreen.getButtonOffset(screen);
++			AccessoryButton inventoryAccessoryButton = GuiHooks.setupAccessoryButton(screen, offsets);
++			if (inventoryAccessoryButton != null) {
++				buttons.add(inventoryAccessoryButton);
++			}
++		} else {
++			GridLayout layout = GuiHooks.setupPerksButtons(screen);
++			if (layout != null) {
++				layout.visitWidgets(buttons::add);
++			}
++		}
++	}
+ 
+ 	/**
+ 	 * @see GuiHooks#drawTrivia(Screen, GuiGraphics)
+@@ -87,6 +88,7 @@ public class GuiListener {
+ 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+ 			ScreenEvents.afterRender(screen).register(GuiListener::onGuiDraw);
+ 		});
++		ScreenEvents.AFTER_INIT.register(GuiListener::onGuiInitialize);
+ 		ClientTickEvents.END_CLIENT_TICK.register(GuiListener::onClientTick);
+ 		KeyInputCallback.EVENT.register(GuiListener::onKeyPress);
+ 	}
+diff --git a/src/main/java/com/aetherteam/aether/client/event/listeners/HandRenderListener.java b/src/main/java/com/aetherteam/aether/client/event/listeners/HandRenderListener.java
+index 23588b6ae..c43e0f31d 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/listeners/HandRenderListener.java
++++ b/src/main/java/com/aetherteam/aether/client/event/listeners/HandRenderListener.java
+@@ -17,19 +17,19 @@ public class HandRenderListener {
+      * @see HandRenderHooks#renderShieldOfRepulsionHandOverlay(ItemInHandRenderer, AbstractClientPlayer, InteractionHand, float, float, float, PoseStack, MultiBufferSource, int)
+      */
+     public static void onRenderHand(RenderHandEvent event) {
+-//        ItemInHandRenderer itemInHandRenderer = Minecraft.getInstance().gameRenderer.itemInHandRenderer; TODO: PORT
+-//        AbstractClientPlayer abstractClientPlayer = Minecraft.getInstance().player;
+-//        InteractionHand hand = event.getHand();
+-//        float interpolatedPitch = event.getInterpolatedPitch();
+-//        float swingProgress = event.getSwingProgress();
+-//        float equipProgress = event.getEquipProgress();
+-//        PoseStack poseStack = event.getPoseStack();
+-//        MultiBufferSource multiBufferSource = event.getMultiBufferSource();
+-//        int packedLight = event.getPackedLight();
+-//        if (!event.isCanceled()) {
+-//            HandRenderHooks.renderGloveHandOverlay(itemInHandRenderer, abstractClientPlayer, hand, interpolatedPitch, swingProgress, equipProgress, poseStack, multiBufferSource, packedLight);
+-//            HandRenderHooks.renderShieldOfRepulsionHandOverlay(itemInHandRenderer, abstractClientPlayer, hand, interpolatedPitch, swingProgress, equipProgress, poseStack, multiBufferSource, packedLight);
+-//        }
++        ItemInHandRenderer itemInHandRenderer = Minecraft.getInstance().gameRenderer.itemInHandRenderer;
++        AbstractClientPlayer abstractClientPlayer = Minecraft.getInstance().player;
++        InteractionHand hand = event.getHand();
++        float interpolatedPitch = event.getPitch();
++        float swingProgress = event.getSwingProgress();
++        float equipProgress = event.getEquipProgress();
++        PoseStack poseStack = event.getPoseStack();
++        MultiBufferSource multiBufferSource = event.getMultiBufferSource();
++        int packedLight = event.getPackedLight();
++        if (!event.isCanceled()) {
++            HandRenderHooks.renderGloveHandOverlay(itemInHandRenderer, abstractClientPlayer, hand, interpolatedPitch, swingProgress, equipProgress, poseStack, multiBufferSource, packedLight);
++            HandRenderHooks.renderShieldOfRepulsionHandOverlay(itemInHandRenderer, abstractClientPlayer, hand, interpolatedPitch, swingProgress, equipProgress, poseStack, multiBufferSource, packedLight);
++        }
+     }
+ 
+     public static void init() {
+diff --git a/src/main/java/com/aetherteam/aether/client/event/listeners/LevelClientListener.java b/src/main/java/com/aetherteam/aether/client/event/listeners/LevelClientListener.java
+index 570550c5d..c5debe1d9 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/listeners/LevelClientListener.java
++++ b/src/main/java/com/aetherteam/aether/client/event/listeners/LevelClientListener.java
+@@ -1,25 +1,7 @@
+ package com.aetherteam.aether.client.event.listeners;
+ 
+-import com.aetherteam.aether.Aether;
+-import com.aetherteam.aether.client.event.hooks.LevelClientHooks;
+-import com.mojang.blaze3d.vertex.PoseStack;
+-import net.minecraft.client.Camera;
+-import net.minecraft.client.Minecraft;
+-import net.minecraft.client.renderer.culling.Frustum;
+-
+ public class LevelClientListener {
+-//    /** TODO: PORT
+-//     * @see LevelClientHooks#renderDungeonBlockOverlays(RenderLevelStageEvent.Stage, PoseStack, Camera, Frustum, Minecraft)
+-//     */
+-//    @SubscribeEvent
+-//    public static void onRenderLevelLast(RenderLevelStageEvent event) {
+-//        RenderLevelStageEvent.Stage stage = event.getStage();
+-//        PoseStack poseStack = event.getPoseStack();
+-//        Camera camera = event.getCamera();
+-//        Frustum frustum = event.getFrustum();
+-//        Minecraft minecraft = Minecraft.getInstance();
+-//        LevelClientHooks.renderDungeonBlockOverlays(stage, poseStack, camera, frustum, minecraft);
+-//    }
++
+ 
+     public static void init() {
+ 
+diff --git a/src/main/java/com/aetherteam/aether/client/event/listeners/WorldPreviewListener.java b/src/main/java/com/aetherteam/aether/client/event/listeners/WorldPreviewListener.java
+index 5ec641a04..e65793658 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/listeners/WorldPreviewListener.java
++++ b/src/main/java/com/aetherteam/aether/client/event/listeners/WorldPreviewListener.java
+@@ -7,6 +7,8 @@ import io.github.fabricators_of_create.porting_lib.event.client.CameraSetupCallb
+ import io.github.fabricators_of_create.porting_lib.event.client.LivingEntityRenderEvents;
+ import io.github.fabricators_of_create.porting_lib.event.client.RenderPlayerEvents;
+ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
++import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
++import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.gui.screens.Screen;
+ import net.minecraft.client.model.EntityModel;
+@@ -19,34 +21,26 @@ import net.minecraft.world.entity.LivingEntity;
+ import net.minecraft.world.entity.player.Player;
+ 
+ public class WorldPreviewListener {
+-//    /** TODO: PORT
+-//     * @see WorldPreviewHooks#setupWorldPreview(Screen)
+-//     */
+-//    @SubscribeEvent(priority = EventPriority.LOWEST)
+-//    public static void onGuiOpenLowest(ScreenEvent.Opening event) {
+-//        Screen newScreen = event.getNewScreen();
+-//        WorldPreviewHooks.setupWorldPreview(newScreen);
+-//    }
+-//
+-//    /** TODO: PORT
+-//     * @see WorldPreviewHooks#hideScreen(Screen)
+-//     */
+-//    @SubscribeEvent
+-//    public static void onScreenRender(ScreenEvent.Render.Pre event) {
+-//        Screen screen = event.getScreen();
+-//        if (WorldPreviewHooks.hideScreen(screen)) {
+-//            event.setCanceled(true);
+-//        }
+-//    }
+-//
+-//    /**
+-//     * @see WorldPreviewHooks#renderMenuWithWorld(RenderLevelStageEvent.Stage)
+-//     */
+-//    @SubscribeEvent
+-//    public static void onRenderLevelLast(RenderLevelStageEvent event) {
+-//        RenderLevelStageEvent.Stage stage = event.getStage();
+-//        WorldPreviewHooks.renderMenuWithWorld(stage);
+-//    }
++    /**
++     * @see WorldPreviewHooks#setupWorldPreview(Screen)
++     */
++    public static void onGuiOpenLowest(Screen newScreen) {
++        WorldPreviewHooks.setupWorldPreview(newScreen);
++    }
++
++    /**
++     * @see WorldPreviewHooks#hideScreen(Screen)
++     */
++    public static boolean onScreenRender(Screen screen) {
++        return WorldPreviewHooks.hideScreen(screen);
++    }
++
++    /**
++     * @see WorldPreviewHooks#renderMenuWithWorld()
++     */
++    public static void onRenderLevelLast(WorldRenderContext context) {
++        WorldPreviewHooks.renderMenuWithWorld();
++    }
+ 
+     /**
+      * @see WorldPreviewHooks#tickMenuWhenPaused()
+@@ -102,6 +96,7 @@ public class WorldPreviewListener {
+     }
+ 
+     public static void init() {
++        WorldRenderEvents.LAST.register(WorldPreviewListener::onRenderLevelLast);
+         ClientTickEvents.END_CLIENT_TICK.register(WorldPreviewListener::onClientTick);
+         LivingEntityRenderEvents.PRE.register(WorldPreviewListener::onRenderEntity);
+         CameraSetupCallback.EVENT.register(WorldPreviewListener::onCameraView);
+diff --git a/src/main/java/com/aetherteam/aether/client/event/listeners/capability/AetherPlayerClientListener.java b/src/main/java/com/aetherteam/aether/client/event/listeners/capability/AetherPlayerClientListener.java
+index 0484f13eb..c9d848494 100644
+--- a/src/main/java/com/aetherteam/aether/client/event/listeners/capability/AetherPlayerClientListener.java
++++ b/src/main/java/com/aetherteam/aether/client/event/listeners/capability/AetherPlayerClientListener.java
+@@ -1,30 +1,25 @@
+ package com.aetherteam.aether.client.event.listeners.capability;
+ 
+-import com.aetherteam.aether.Aether;
+ import com.aetherteam.aether.client.event.hooks.CapabilityClientHooks;
+ import io.github.fabricators_of_create.porting_lib.event.client.KeyInputCallback;
++import io.github.fabricators_of_create.porting_lib.event.client.MouseInputEvents;
+ import net.minecraft.client.player.Input;
+ import net.minecraft.world.entity.player.Player;
+ 
+ public class AetherPlayerClientListener {
+-//    /** TODO: PORT
+-//     * @see CapabilityClientHooks.AetherPlayerHooks#movementInput(Player, Input)
+-//     */
+-//    @SubscribeEvent
+-//    public static void onMove(MovementInputUpdateEvent event) {
+-//        Player player = event.getEntity();
+-//        Input input = event.getInput();
+-//        CapabilityClientHooks.AetherPlayerHooks.movementInput(player, input);
+-//    }
+-//
+-//    /**
+-//     * @see CapabilityClientHooks.AetherPlayerHooks#mouseInput(int)
+-//     */
+-//    @SubscribeEvent
+-//    public static void onClick(InputEvent.MouseButton.Post event) {
+-//        int button = event.getButton();
+-//        CapabilityClientHooks.AetherPlayerHooks.mouseInput(button);
+-//    }
++    /**
++     * @see CapabilityClientHooks.AetherPlayerHooks#movementInput(Player, Input)
++     */
++    public static void onMove(Player player, Input input) {
++        CapabilityClientHooks.AetherPlayerHooks.movementInput(player, input);
++    }
++
++    /**
++     * @see CapabilityClientHooks.AetherPlayerHooks#mouseInput(int)
++     */
++    public static void onClick(int button, int modifiers, MouseInputEvents.Action action) {
++        CapabilityClientHooks.AetherPlayerHooks.mouseInput(button);
++    }
+ 
+     /**
+      * @see CapabilityClientHooks.AetherPlayerHooks#keyInput(int)
+@@ -34,6 +29,7 @@ public class AetherPlayerClientListener {
+     }
+ 
+     public static void init() {
++        MouseInputEvents.AFTER_BUTTON.register(AetherPlayerClientListener::onClick);
+         KeyInputCallback.EVENT.register(AetherPlayerClientListener::onPress);
+     }
+ }
+diff --git a/src/main/java/com/aetherteam/aether/client/gui/component/inventory/AccessoryButton.java b/src/main/java/com/aetherteam/aether/client/gui/component/inventory/AccessoryButton.java
+index c6b2968fb..4eccd4d02 100644
+--- a/src/main/java/com/aetherteam/aether/client/gui/component/inventory/AccessoryButton.java
++++ b/src/main/java/com/aetherteam/aether/client/gui/component/inventory/AccessoryButton.java
+@@ -5,6 +5,7 @@ import com.aetherteam.aether.network.AetherPacketHandler;
+ import com.aetherteam.aether.network.packet.serverbound.OpenAccessoriesPacket;
+ import com.aetherteam.aether.network.packet.serverbound.OpenInventoryPacket;
+ import com.aetherteam.nitrogen.network.PacketRelay;
++import io.github.fabricators_of_create.porting_lib.mixin.accessors.client.accessor.AbstractContainerScreenAccessor;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.gui.GuiGraphics;
+ import net.minecraft.client.gui.components.ImageButton;
+@@ -47,9 +48,9 @@ public class AccessoryButton extends ImageButton {
+ 
+     @Override
+     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+-//        Tuple<Integer, Integer> offsets = AccessoriesScreen.getButtonOffset(this.parentScreen); TODO: PORT
+-//        this.setX(this.parentScreen.getGuiLeft() + offsets.getA());
+-//        this.setY(this.parentScreen.getGuiTop() + offsets.getB());
++        Tuple<Integer, Integer> offsets = AccessoriesScreen.getButtonOffset(this.parentScreen);
++        this.setX(((AbstractContainerScreenAccessor) this.parentScreen).port_lib$getGuiLeft() + offsets.getA());
++        this.setY(((AbstractContainerScreenAccessor) this.parentScreen).port_lib$getGuiTop() + offsets.getB());
+         if (this.parentScreen instanceof CreativeModeInventoryScreen screen) {
+             boolean isInventoryTab = screen.isInventoryOpen();
+             this.active = isInventoryTab;
+diff --git a/src/main/java/com/aetherteam/aether/client/gui/screen/inventory/AccessoriesScreen.java b/src/main/java/com/aetherteam/aether/client/gui/screen/inventory/AccessoriesScreen.java
+index e9ec93cd3..1b2d8b413 100644
+--- a/src/main/java/com/aetherteam/aether/client/gui/screen/inventory/AccessoriesScreen.java
++++ b/src/main/java/com/aetherteam/aether/client/gui/screen/inventory/AccessoriesScreen.java
+@@ -14,6 +14,9 @@ import com.aetherteam.nitrogen.api.users.User;
+ import com.aetherteam.nitrogen.api.users.UserData;
+ import com.aetherteam.nitrogen.network.PacketRelay;
+ import com.mojang.blaze3d.platform.InputConstants;
++import io.github.fabricators_of_create.porting_lib.mixin.accessors.client.accessor.AbstractContainerScreenAccessor;
++import io.github.fabricators_of_create.porting_lib.util.KeyBindingHelper;
++import net.fabricmc.fabric.api.client.screen.v1.Screens;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.gui.GuiGraphics;
+ import net.minecraft.client.gui.components.ImageButton;
+@@ -243,21 +246,21 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //
+     @Override
+     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+-//        if (this.getMinecraft().player != null) {
+-//            int i = this.getGuiLeft();
+-//            int j = this.getGuiTop();
+-//            guiGraphics.blit(this.getMinecraft().player.isCreative() ? ACCESSORIES_INVENTORY_CREATIVE : ACCESSORIES_INVENTORY, i, j, 0, 0, this.getXSize() + this.creativeXOffset(), this.getYSize());
+-//            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i + 33, j + 75, 30, (float) (i + 31) - mouseX, (float) (j + 75 - 50) - mouseY, this.getMinecraft().player);
+-//        }
++    //    if (this.getMinecraft().player != null) {
++    //        int i = this.getGuiLeft();
++    //        int j = this.getGuiTop();
++    //         guiGraphics.blit(this.getMinecraft().player.isCreative() ? ACCESSORIES_INVENTORY_CREATIVE : ACCESSORIES_INVENTORY, i, j, 0, 0, this.imageWidth + this.creativeXOffset(), this.imageHeight);
++    //        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i + 33, j + 75, 30, (float) (i + 31) - mouseX, (float) (j + 75 - 50) - mouseY, this.getMinecraft().player);
++    //    }
+     }
+-//
++
+ //    /**
+ //     * @return The {@link Integer} y-offset for the GUI.
+ //     */
+ //    private int creativeXOffset() {
+ //        return this.getMinecraft().player != null && this.getMinecraft().player.isCreative() ? 18 : 0;
+ //    }
+-//
++
+ //    @Override
+ //    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+ //        Minecraft minecraft = this.getMinecraft();
+@@ -270,14 +273,14 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //            }
+ //        }
+ //    }
+-//
++
+ //    @Override
+ //    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+ //        if (this.getMinecraft().player != null) {
+ //            guiGraphics.drawString(this.font, this.title, 115, 6, 4210752, false);
+ //        }
+ //    }
+-//
++
+ //    @Override
+ //    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+ //        if (this.getRecipeBookComponent().isVisible() && this.widthTooNarrow) {
+@@ -285,7 +288,7 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //            this.updateScreenPosition();
+ //            return true;
+ //        } else
+-//        if (AetherKeys.OPEN_ACCESSORY_INVENTORY.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode))) {
++//         if (KeyBindingHelper.isActiveAndMatches(AetherKeys.OPEN_ACCESSORY_INVENTORY, InputConstants.getKey(keyCode, scanCode))) {
+ //            LocalPlayer playerEntity = this.getMinecraft().player;
+ //            if (playerEntity != null) {
+ //                playerEntity.closeContainer();
+@@ -295,7 +298,7 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //            return super.keyPressed(keyCode, scanCode, modifiers);
+ //        }
+ //    }
+-//
++
+ //    @Override
+ //    protected boolean isHovering(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
+ //        if (this.isRenderButtonHovered) {
+@@ -303,7 +306,7 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //        }
+ //        return (!this.widthTooNarrow || !this.getRecipeBookComponent().isVisible()) && super.isHovering(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
+ //    }
+-//
++
+ //    @Override
+ //    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+ //        if (this.getRecipeBookComponent().mouseClicked(mouseX, mouseY, button)) {
+@@ -313,7 +316,7 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //            return (!this.widthTooNarrow || !this.getRecipeBookComponent().isVisible()) && super.mouseClicked(mouseX, mouseY, button);
+ //        }
+ //    }
+-//
++
+ //    @Override
+ //    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+ //        if (this.buttonClicked) {
+@@ -323,12 +326,12 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //            return super.mouseReleased(mouseX, mouseY, button);
+ //        }
+ //    }
+-//
++
+ //    @Override
+ //    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
+ //        return RecipeBookBehavior.super.hasClickedOutside(this, mouseX, mouseY, guiLeft, guiTop, mouseButton);
+ //    }
+-//
++
+ //    /**
+ //     * [CODE COPY] {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen}.<br><br>
+ //     * Heavily modified to only have behavior for the item trash slot.
+@@ -343,7 +346,7 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //                    if (slot == this.destroyItemSlot && this.destroyItemSlot != null && flag) {
+ //                        for (int j = 0; j < this.getMinecraft().player.inventoryMenu.getItems().size(); ++j) {
+ //                            this.getMinecraft().gameMode.handleCreativeModeItemAdd(ItemStack.EMPTY, j);
+-//                            NetworkHandler.INSTANCE.send(PacketDistributor.SERVER.noArg(), new CPacketDestroy());
++// //                            NetworkHandler.INSTANCE.send(PacketDistributor.SERVER.noArg(), new CPacketDestroy()); TODO: PORT
+ //                        }
+ //                    } else {
+ //                        if (slot == this.destroyItemSlot && this.destroyItemSlot != null) {
+@@ -356,7 +359,7 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+ //            super.slotClicked(slot, slotId, mouseButton, type);
+ //        }
+ //    }
+-//
++
+     @Override
+     public void recipesUpdated() {
+         RecipeBookBehavior.super.recipesUpdated(this);
+@@ -366,34 +369,46 @@ public class AccessoriesScreen extends EffectRenderingInventoryScreen<Accessorie
+     public RecipeBookComponent getRecipeBookComponent() {
+         return this.recipeBookComponent;
+     }
+-//
++
+ //    @Override
+ //    public boolean canSeeEffects() {
+-//        int i = this.getGuiLeft() + this.getXSize() + 2 + this.creativeXOffset();
++//         int i = this.getGuiLeft() + this.imageWidth + 2 + this.creativeXOffset();
+ //        int j = this.width - i;
+ //        return j > 13;
+ //    }
+-//
+-//    /**
+-//     * Offsets the accessories screen button based on what screen is currently open.
+-//     * @param screen The current {@link Screen}.
+-//     * @return A {@link Tuple} containing the x and y {@link Integer}s.
+-//     */
+-//    public static Tuple<Integer, Integer> getButtonOffset(Screen screen) {
+-//        int x = 0;
+-//        int y = 0;
+-//        if (screen instanceof InventoryScreen || screen instanceof CuriosScreen) {
+-//            x = AetherConfig.CLIENT.button_inventory_x.get();
+-//            y = AetherConfig.CLIENT.button_inventory_y.get();
+-//        }
+-//        if (screen instanceof CreativeModeInventoryScreen) {
+-//            x = AetherConfig.CLIENT.button_creative_x.get();
+-//            y = AetherConfig.CLIENT.button_creative_y.get();
+-//        }
+-//        if (screen instanceof AccessoriesScreen) {
+-//            x = AetherConfig.CLIENT.button_accessories_x.get();
+-//            y = AetherConfig.CLIENT.button_accessories_y.get();
+-//        }
+-//        return new Tuple<>(x, y);
+-//    }
++
++    /**
++     * Offsets the accessories screen button based on what screen is currently open.
++     * @param screen The current {@link Screen}.
++     * @return A {@link Tuple} containing the x and y {@link Integer}s.
++     */
++    public static Tuple<Integer, Integer> getButtonOffset(Screen screen) {
++        int x = 0;
++        int y = 0;
++        if (screen instanceof InventoryScreen/* || screen instanceof CuriosScreen*/) {
++            x = AetherConfig.CLIENT.button_inventory_x.get();
++            y = AetherConfig.CLIENT.button_inventory_y.get();
++        }
++        if (screen instanceof CreativeModeInventoryScreen) {
++            x = AetherConfig.CLIENT.button_creative_x.get();
++            y = AetherConfig.CLIENT.button_creative_y.get();
++        }
++        if (screen instanceof AccessoriesScreen) {
++            x = AetherConfig.CLIENT.button_accessories_x.get();
++            y = AetherConfig.CLIENT.button_accessories_y.get();
++        }
++        return new Tuple<>(x, y);
++    }
++
++    public int getGuiLeft() {
++        return ((AbstractContainerScreenAccessor)this).port_lib$getGuiLeft();
++    }
++
++    public int getGuiTop() {
++        return ((AbstractContainerScreenAccessor)this).port_lib$getGuiTop();
++    }
++
++    public Minecraft getMinecraft() {
++        return Screens.getClient(this);
++    }
+ }
+diff --git a/src/main/java/com/aetherteam/aether/client/renderer/AetherRenderers.java b/src/main/java/com/aetherteam/aether/client/renderer/AetherRenderers.java
+index 6ca7fc8b8..16f0d9030 100644
+--- a/src/main/java/com/aetherteam/aether/client/renderer/AetherRenderers.java
++++ b/src/main/java/com/aetherteam/aether/client/renderer/AetherRenderers.java
+@@ -213,6 +213,7 @@ public class AetherRenderers {
+     public static void init() {
+         registerEntityRenderers();
+         registerLayerDefinitions();
++        registerCuriosRenderers();
+         LivingEntityFeatureRendererRegistrationCallback.EVENT.register(AetherRenderers::addEntityLayers);
+     }
+ }
+diff --git a/src/main/java/com/aetherteam/aether/client/renderer/level/AetherSkyRenderEffects.java b/src/main/java/com/aetherteam/aether/client/renderer/level/AetherSkyRenderEffects.java
+index e967528f2..2c10869b5 100644
+--- a/src/main/java/com/aetherteam/aether/client/renderer/level/AetherSkyRenderEffects.java
++++ b/src/main/java/com/aetherteam/aether/client/renderer/level/AetherSkyRenderEffects.java
+@@ -17,6 +17,7 @@ import net.minecraft.util.CubicSampler;
+ import net.minecraft.util.Mth;
+ import net.minecraft.world.level.biome.BiomeManager;
+ import net.minecraft.world.phys.Vec3;
++import org.jetbrains.annotations.NotNull;
+ import org.joml.Matrix4f;
+ import org.joml.Vector3f;
+ 
+@@ -319,7 +320,7 @@ public class AetherSkyRenderEffects extends DimensionSpecialEffects {
+      * [CODE COPY] - {@link ClientLevel#getSkyColor(Vec3, float)}.<br><br>
+      * Modified to have lighter sky coloration than the Overworld during weather.
+      */
+-    public Vec3 getSkyColor(ClientLevel level, Vec3 pos, float partialTick) {
++    public Vec3 getSkyColor(@NotNull ClientLevel level, Vec3 pos, float partialTick) {
+         float f = level.getTimeOfDay(partialTick);
+         Vec3 vec3 = pos.subtract(2.0, 2.0, 2.0).scale(0.25);
+         BiomeManager biomeManager = level.getBiomeManager();
+diff --git a/src/main/java/com/aetherteam/aether/client/renderer/player/layer/PlayerWingsLayer.java b/src/main/java/com/aetherteam/aether/client/renderer/player/layer/PlayerWingsLayer.java
+index cfa229f0d..af8a7c87c 100644
+--- a/src/main/java/com/aetherteam/aether/client/renderer/player/layer/PlayerWingsLayer.java
++++ b/src/main/java/com/aetherteam/aether/client/renderer/player/layer/PlayerWingsLayer.java
+@@ -5,6 +5,7 @@ import com.aetherteam.aether.capability.player.AetherPlayer;
+ import com.aetherteam.aether.client.renderer.AetherModelLayers;
+ import com.aetherteam.aether.client.renderer.entity.model.ValkyrieWingsModel;
+ import com.aetherteam.aether.item.EquipmentUtil;
++import com.aetherteam.aether.utils.FabricUtils;
+ import com.mojang.blaze3d.vertex.PoseStack;
+ import com.mojang.blaze3d.vertex.VertexConsumer;
+ import net.minecraft.client.model.PlayerModel;
+@@ -57,7 +58,7 @@ public class PlayerWingsLayer<T extends Player, M extends PlayerModel<T>> extend
+      * @param sinage The {@link Float} for the rotation value.
+      */
+     public void setupWingRotation(T entity, float sinage) {
+-        if (!entity.onGround()/* && !entity.isInFluidType() TODO: PORT*/ && (entity.getVehicle() != null && !entity.getVehicle().onGround())) {
++        if (!entity.onGround() && !FabricUtils.isInFluidType(entity) && (entity.getVehicle() != null && !entity.getVehicle().onGround())) {
+             sinage *= 1.5F;
+         } else {
+             sinage *= 0.3F;
+@@ -81,8 +82,8 @@ public class PlayerWingsLayer<T extends Player, M extends PlayerModel<T>> extend
+         }
+ 
+         this.wings.rightWing.yRot -= Mth.sin(sinage) / 6.0F;
+-        this.wings.rightWing.zRot -= Mth.cos(sinage) / (entity.onGround() || /*entity.isInFluidType() TODO: PORT*/false ? 8.0F : 3.0F);
++        this.wings.rightWing.zRot -= Mth.cos(sinage) / (entity.onGround() || FabricUtils.isInFluidType(entity) ? 8.0F : 3.0F);
+         this.wings.leftWing.yRot += Mth.sin(sinage) / 6.0F;
+-        this.wings.leftWing.zRot += Mth.cos(sinage) / (entity.onGround() || /*entity.isInFluidType() TODO: PORT*/false ? 8.0F : 3.0F);
++        this.wings.leftWing.zRot += Mth.cos(sinage) / (entity.onGround() || FabricUtils.isInFluidType(entity) ? 8.0F : 3.0F);
+     }
+ }
+diff --git a/src/main/java/com/aetherteam/aether/entity/miscellaneous/Parachute.java b/src/main/java/com/aetherteam/aether/entity/miscellaneous/Parachute.java
+index b5d9d5bce..8c7c6375d 100644
+--- a/src/main/java/com/aetherteam/aether/entity/miscellaneous/Parachute.java
++++ b/src/main/java/com/aetherteam/aether/entity/miscellaneous/Parachute.java
+@@ -2,6 +2,7 @@ package com.aetherteam.aether.entity.miscellaneous;
+ 
+ import com.aetherteam.aether.entity.EntityUtil;
+ import com.aetherteam.aether.mixin.mixins.common.accessor.ServerGamePacketListenerImplAccessor;
++import com.aetherteam.aether.utils.FabricUtils;
+ import io.github.fabricators_of_create.porting_lib.attributes.PortingLibAttributes;
+ import io.github.fabricators_of_create.porting_lib.entity.PortingLibEntity;
+ import net.minecraft.core.Direction;
+@@ -44,7 +45,7 @@ public class Parachute extends Entity {
+             this.checkSlowFallDistance(); // Resets the Parachute's fall distance.
+             this.moveParachute(passenger);
+             this.spawnExplosionParticle();
+-            if (this.onGround() ||/* this.isInFluidType() TODO: PORT ||*/ this.verticalCollisionBelow) { // The parachute breaks when it collides with something.
++            if (this.onGround() || FabricUtils.isInFluidType(this) || this.verticalCollisionBelow) { // The parachute breaks when it collides with something.
+                 this.ejectPassengers();
+                 this.die();
+             }
+diff --git a/src/main/java/com/aetherteam/aether/entity/monster/AbstractWhirlwind.java b/src/main/java/com/aetherteam/aether/entity/monster/AbstractWhirlwind.java
+index 6dbbd9432..9e982f6a0 100644
+--- a/src/main/java/com/aetherteam/aether/entity/monster/AbstractWhirlwind.java
++++ b/src/main/java/com/aetherteam/aether/entity/monster/AbstractWhirlwind.java
+@@ -2,6 +2,7 @@ package com.aetherteam.aether.entity.monster;
+ 
+ import com.aetherteam.aether.AetherTags;
+ import com.aetherteam.aether.client.AetherSoundEvents;
++import com.aetherteam.aether.utils.FabricUtils;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.nbt.CompoundTag;
+ import net.minecraft.network.syncher.EntityDataAccessor;
+@@ -99,7 +100,7 @@ public abstract class AbstractWhirlwind extends Mob {
+         super.tick();
+         this.lifeLeft--;
+         if (!this.level().isClientSide()) {
+-            if (this.lifeLeft <= 0/* || this.isInFluidType() TODO: PORT*/) {
++            if (this.lifeLeft <= 0 || FabricUtils.isInFluidType(this)) {
+                 this.discard();
+             }
+         }
+diff --git a/src/main/java/com/aetherteam/aether/entity/monster/Swet.java b/src/main/java/com/aetherteam/aether/entity/monster/Swet.java
+index 0e106512e..6b800f8f7 100644
+--- a/src/main/java/com/aetherteam/aether/entity/monster/Swet.java
++++ b/src/main/java/com/aetherteam/aether/entity/monster/Swet.java
+@@ -5,6 +5,7 @@ import com.aetherteam.aether.client.AetherSoundEvents;
+ import com.aetherteam.aether.entity.EntityUtil;
+ import com.aetherteam.aether.entity.MountableMob;
+ import com.aetherteam.aether.item.EquipmentUtil;
++import com.aetherteam.aether.utils.FabricUtils;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.particles.ParticleTypes;
+ import net.minecraft.nbt.CompoundTag;
+@@ -781,7 +782,7 @@ public class Swet extends Slime implements MountableMob {
+         }
+ 
+         public boolean canUse() {
+-            return this.swet.getTarget() == null && (this.swet.onGround()/* || this.swet.isInFluidType() TODO: PORT*/ || this.swet.hasEffect(MobEffects.LEVITATION)) && this.swet.getMoveControl() instanceof SwetMoveControl;
++            return this.swet.getTarget() == null && (this.swet.onGround() || FabricUtils.isInFluidType(this.swet) || this.swet.hasEffect(MobEffects.LEVITATION)) && this.swet.getMoveControl() instanceof SwetMoveControl;
+         }
+ 
+         public void tick() {
+diff --git a/src/main/java/com/aetherteam/aether/entity/monster/dungeon/boss/SunSpirit.java b/src/main/java/com/aetherteam/aether/entity/monster/dungeon/boss/SunSpirit.java
+index 040377f9c..3b98b59b7 100644
+--- a/src/main/java/com/aetherteam/aether/entity/monster/dungeon/boss/SunSpirit.java
++++ b/src/main/java/com/aetherteam/aether/entity/monster/dungeon/boss/SunSpirit.java
+@@ -21,8 +21,10 @@ import com.aetherteam.aether.network.AetherPacketHandler;
+ import com.aetherteam.aether.network.packet.serverbound.BossInfoPacket;
+ import com.aetherteam.nitrogen.entity.BossRoomTracker;
+ import com.aetherteam.nitrogen.network.PacketRelay;
++import io.github.fabricators_of_create.porting_lib.core.event.BaseEvent;
+ import io.github.fabricators_of_create.porting_lib.entity.IEntityAdditionalSpawnData;
+ import io.github.fabricators_of_create.porting_lib.entity.PortingLibEntity;
++import io.github.fabricators_of_create.porting_lib.entity.events.living.MobEffectEvent;
+ import net.minecraft.ChatFormatting;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.particles.ParticleTypes;
+@@ -349,11 +351,11 @@ public class SunSpirit extends PathfinderMob implements AetherBossMob<SunSpirit>
+      */
+     @Override //code copy
+     public boolean canBeAffected(MobEffectInstance pEffectInstance) {
+-//        MobEffectEvent.Applicable event = new MobEffectEvent.Applicable(this, pEffectInstance); TODO: PORT
+-//        MinecraftForge.EVENT_BUS.post(event);
+-//        if (event.getResult() != Event.Result.DEFAULT) {
+-//            return event.getResult() == Event.Result.ALLOW;
+-//        }
++        MobEffectEvent.Applicable event = new MobEffectEvent.Applicable(this, pEffectInstance);
++        event.sendEvent();
++        if (event.getResult() != BaseEvent.Result.DEFAULT) {
++            return event.getResult() == BaseEvent.Result.ALLOW;
++        }
+         return false;
+     }
+ 
+diff --git a/src/main/java/com/aetherteam/aether/entity/passive/Aerbunny.java b/src/main/java/com/aetherteam/aether/entity/passive/Aerbunny.java
+index 323fafc3c..6917b9f7b 100644
+--- a/src/main/java/com/aetherteam/aether/entity/passive/Aerbunny.java
++++ b/src/main/java/com/aetherteam/aether/entity/passive/Aerbunny.java
+@@ -9,6 +9,7 @@ import com.aetherteam.aether.entity.ai.goal.FallingRandomStrollGoal;
+ import com.aetherteam.aether.mixin.mixins.common.accessor.ServerGamePacketListenerImplAccessor;
+ import com.aetherteam.aether.network.AetherPacketHandler;
+ import com.aetherteam.aether.network.packet.serverbound.AerbunnyPuffPacket;
++import com.aetherteam.aether.utils.FabricUtils;
+ import com.aetherteam.nitrogen.network.PacketRelay;
+ import io.github.fabricators_of_create.porting_lib.attributes.PortingLibAttributes;
+ import net.minecraft.core.BlockPos;
+@@ -104,7 +105,7 @@ public class Aerbunny extends AetherAnimal {
+             this.setPuffiness(0);
+         }
+         this.handlePlayerInput();
+-        if (this.getVehicle() != null && (this.getVehicle().onGround()/* || this.getVehicle().isInFluidType() TODO: PORT*/)) { // Reset the last tracked fall position if the Aerbunny touches a surface.
++        if (this.getVehicle() != null && (this.getVehicle().onGround() || FabricUtils.isInFluidType(this.getVehicle()))) { // Reset the last tracked fall position if the Aerbunny touches a surface.
+             this.lastPos = null;
+         }
+     }
+@@ -148,7 +149,7 @@ public class Aerbunny extends AetherAnimal {
+             if (!player.onGround() && !player.isFallFlying()) {
+                 AttributeInstance playerGravity = player.getAttribute(PortingLibAttributes.ENTITY_GRAVITY);
+                 if (playerGravity != null) {
+-                    if (!player.getAbilities().flying /*&& !player.isInFluidType() TODO: PORT*/ && playerGravity.getValue() > 0.02) {  // Entity isn't allowed to fall too slowly from gravity.
++                    if (!player.getAbilities().flying && !FabricUtils.isInFluidType(player) && playerGravity.getValue() > 0.02) {  // Entity isn't allowed to fall too slowly from gravity.
+                         player.setDeltaMovement(player.getDeltaMovement().add(0.0, 0.05, 0.0));
+                     }
+                 }
+diff --git a/src/main/java/com/aetherteam/aether/event/hooks/EntityHooks.java b/src/main/java/com/aetherteam/aether/event/hooks/EntityHooks.java
+index 171ec969b..62f671a73 100644
+--- a/src/main/java/com/aetherteam/aether/event/hooks/EntityHooks.java
++++ b/src/main/java/com/aetherteam/aether/event/hooks/EntityHooks.java
+@@ -23,6 +23,8 @@ import com.aetherteam.aether.item.accessories.miscellaneous.ShieldOfRepulsionIte
+ import com.aetherteam.aether.item.accessories.pendant.PendantItem;
+ import com.aetherteam.aether.item.miscellaneous.bucket.SkyrootBucketItem;
+ import com.aetherteam.aether.mixin.AetherMixinHooks;
++import com.aetherteam.aether.utils.FabricUtils;
++import io.github.fabricators_of_create.porting_lib.entity.events.living.MobEffectEvent;
+ import io.github.fabricators_of_create.porting_lib.entity.events.EntityStruckByLightningEvent;
+ import io.github.fabricators_of_create.porting_lib.entity.events.ProjectileImpactEvent;
+ import io.github.fabricators_of_create.porting_lib.entity.events.ShieldBlockEvent;
+diff --git a/src/main/java/com/aetherteam/aether/event/listeners/EntityListener.java b/src/main/java/com/aetherteam/aether/event/listeners/EntityListener.java
+index 835c405b8..a2f666cb8 100644
+--- a/src/main/java/com/aetherteam/aether/event/listeners/EntityListener.java
++++ b/src/main/java/com/aetherteam/aether/event/listeners/EntityListener.java
+@@ -3,7 +3,10 @@ package com.aetherteam.aether.event.listeners;
+ import com.aetherteam.aether.Aether;
+ import com.aetherteam.aether.event.hooks.EntityHooks;
+ import dev.emi.trinkets.api.event.TrinketDropCallback;
++import io.github.fabricators_of_create.porting_lib.core.event.BaseEvent;
+ import io.github.fabricators_of_create.porting_lib.entity.events.*;
++import io.github.fabricators_of_create.porting_lib.entity.events.living.MobEffectEvent;
++import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+ import net.minecraft.world.InteractionHand;
+ import net.minecraft.world.InteractionResult;
+ import net.minecraft.world.damagesource.DamageSource;
+diff --git a/src/main/java/com/aetherteam/aether/event/listeners/capability/AetherPlayerListener.java b/src/main/java/com/aetherteam/aether/event/listeners/capability/AetherPlayerListener.java
+index 799a20942..29185149d 100644
+--- a/src/main/java/com/aetherteam/aether/event/listeners/capability/AetherPlayerListener.java
++++ b/src/main/java/com/aetherteam/aether/event/listeners/capability/AetherPlayerListener.java
+@@ -62,11 +62,11 @@ public class AetherPlayerListener {
+     }
+ 
+     public static void init() {
+-//        PlayerEvents.LOGGED_IN.register(AetherPlayerListener::onPlayerLogin);
+-//        PlayerEvents.LOGGED_OUT.register(AetherPlayerListener::onPlayerLogout);
+-//        EntityEvents.ON_JOIN_WORLD.register(AetherPlayerListener::onPlayerJoinLevel);
+-//        LivingEntityEvents.LivingTickEvent.TICK.register(AetherPlayerListener::onPlayerUpdate);
+-//        ServerPlayerEvents.COPY_FROM.register(AetherPlayerListener::onPlayerClone);
+-//        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(AetherPlayerListener::onPlayerChangeDimension);
++        PlayerEvents.LOGGED_IN.register(AetherPlayerListener::onPlayerLogin);
++        PlayerEvents.LOGGED_OUT.register(AetherPlayerListener::onPlayerLogout);
++        EntityEvents.ON_JOIN_WORLD.register(AetherPlayerListener::onPlayerJoinLevel);
++        LivingEntityEvents.LivingTickEvent.TICK.register(AetherPlayerListener::onPlayerUpdate);
++        ServerPlayerEvents.COPY_FROM.register(AetherPlayerListener::onPlayerClone);
++        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(AetherPlayerListener::onPlayerChangeDimension);
+     }
+ }
+diff --git a/src/main/java/com/aetherteam/aether/inventory/menu/AccessoriesMenu.java b/src/main/java/com/aetherteam/aether/inventory/menu/AccessoriesMenu.java
+index 16e189a24..3da057535 100644
+--- a/src/main/java/com/aetherteam/aether/inventory/menu/AccessoriesMenu.java
++++ b/src/main/java/com/aetherteam/aether/inventory/menu/AccessoriesMenu.java
+@@ -2,6 +2,10 @@ package com.aetherteam.aether.inventory.menu;
+ 
+ import com.aetherteam.aether.mixin.mixins.common.accessor.AbstractContainerMenuAccessor;
+ import com.mojang.datafixers.util.Pair;
++import dev.emi.trinkets.SurvivalTrinketSlot;
++import dev.emi.trinkets.api.SlotGroup;
++import dev.emi.trinkets.api.TrinketComponent;
++import dev.emi.trinkets.api.TrinketsApi;
+ import net.fabricmc.api.EnvType;
+ import net.fabricmc.api.Environment;
+ import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+@@ -52,7 +56,7 @@ public class AccessoriesMenu extends InventoryMenu {
+             "aether_accessory"
+     };
+ 
+-//    public final LazyOptional<ICuriosItemHandler> curiosHandler; TODO: PORT
++    public final Optional<TrinketComponent> curiosHandler;
+     private final Player player;
+ 
+     private final CraftingContainer craftMatrix = new TransientCraftingContainer(this, 2, 2);
+@@ -67,13 +71,13 @@ public class AccessoriesMenu extends InventoryMenu {
+     public AccessoriesMenu(int containerId, Inventory playerInventory, boolean hasButton) {
+         super(playerInventory, playerInventory.player.level().isClientSide(), playerInventory.player);
+         AbstractContainerMenuAccessor abstractContainerMenuAccessor = (AbstractContainerMenuAccessor) this;
+-//        abstractContainerMenuAccessor.aether$setMenuType(AetherMenuTypes.ACCESSORIES.get()); TODO: PORT
++        abstractContainerMenuAccessor.aether$setMenuType(AetherMenuTypes.ACCESSORIES.get());
+         abstractContainerMenuAccessor.aether$setContainerId(containerId);
+         abstractContainerMenuAccessor.aether$getRemoteSlots().clear();
+         abstractContainerMenuAccessor.aether$getLastSlots().clear();
+         this.slots.clear();
+         this.player = playerInventory.player;
+-//        this.curiosHandler = CuriosApi.getCuriosInventory(this.player);
++        this.curiosHandler = TrinketsApi.getTrinketComponent(this.player);
+         this.hasButton = hasButton;
+ 
+         this.addSlot(new ResultSlot(playerInventory.player, this.craftMatrix, this.craftResult, 0, 154, 28));
+@@ -101,7 +105,7 @@ public class AccessoriesMenu extends InventoryMenu {
+ 
+                 @Override
+                 public boolean mayPlace(ItemStack stack) {
+-                    return false;//stack.canEquip(equipmentSlotType, AccessoriesMenu.this.player); TODO: PORT
++                    return Mob.getEquipmentSlotForItem(stack) == equipmentSlotType;
+                 }
+ 
+                 @Override
+@@ -136,18 +140,18 @@ public class AccessoriesMenu extends InventoryMenu {
+             }
+         });
+ 
+-//        this.curiosHandler.ifPresent(curios -> { TODO: PORT
+-//            Map<String, ICurioStacksHandler> curioMap = curios.getCurios();
+-//            int slots = 0;
+-//            int xOffset = 77;
+-//            int yOffset = 8;
+-//            for (String identifier : AETHER_IDENTIFIERS) { // Creates the slots for all the Aether Curios identifiers.
+-//                ICurioStacksHandler stacksHandler = curioMap.get(identifier);
++        this.curiosHandler.ifPresent(curios -> {
++            Map<String, SlotGroup> curioMap = curios.getGroups();
++            int slots = 0;
++            int xOffset = 77;
++            int yOffset = 8;
++            for (String identifier : AETHER_IDENTIFIERS) { // Creates the slots for all the Aether Curios identifiers.
++                SlotGroup stacksHandler = curioMap.get(identifier);
+ //                IDynamicStackHandler stackHandler = stacksHandler.getStacks();
+ //                if (!stacksHandler.isVisible()) {
+ //                    for (int i = 0; i < stackHandler.getSlots(); i++) {
+ //                        if (!identifier.equals("aether_accessory")) {
+-//                            this.addSlot(new CurioSlot(this.player, stackHandler, i, identifier, xOffset, yOffset, stacksHandler.getRenders(), stacksHandler.canToggleRendering()));
++//                            this.addSlot(new SurvivalTrinketSlot()new CurioSlot(this.player, stackHandler, i, identifier, xOffset, yOffset, stacksHandler.getRenders(), stacksHandler.canToggleRendering()));
+ //                            slots++;
+ //                            yOffset += 18;
+ //                            if (slots % 3 == 0) {
+@@ -164,8 +168,8 @@ public class AccessoriesMenu extends InventoryMenu {
+ //                        }
+ //                    }
+ //                }
+-//            }
+-//        });
++            }
++        });
+     }
+ 
+     @Override
+@@ -269,7 +273,7 @@ public class AccessoriesMenu extends InventoryMenu {
+                 if (!this.moveItemStackTo(itemStack1, i, i + 1, false)) {
+                     return ItemStack.EMPTY;
+                 }
+-//            } else if (index < 46 && !curioTags.isEmpty() && !this.getEmptyCurioSlots(curioTags).isEmpty()) { TODO: PORT
++//            } else if (index < 46 && !curioTags.isEmpty() && !this.getEmptyCurioSlots(curioTags).isEmpty()) {
+ //                for (int i : this.getEmptyCurioSlots(curioTags)) {
+ //                    if (!this.moveItemStackTo(itemStack1, i, i + 1, false)) {
+ //                        return ItemStack.EMPTY;
+diff --git a/src/main/java/com/aetherteam/aether/inventory/menu/AetherMenuTypes.java b/src/main/java/com/aetherteam/aether/inventory/menu/AetherMenuTypes.java
+index 183b65703..3514a2592 100644
+--- a/src/main/java/com/aetherteam/aether/inventory/menu/AetherMenuTypes.java
++++ b/src/main/java/com/aetherteam/aether/inventory/menu/AetherMenuTypes.java
+@@ -11,7 +11,7 @@ import net.minecraft.world.inventory.MenuType;
+ public class AetherMenuTypes {
+ 	public static final LazyRegistrar<MenuType<?>> MENU_TYPES = LazyRegistrar.create(Registries.MENU, Aether.MODID);
+ 
+-//	public static final RegistryObject<MenuType<AccessoriesMenu>> ACCESSORIES = register("accessories", AccessoriesMenu::new); TODO: PORT
++	public static final RegistryObject<MenuType<AccessoriesMenu>> ACCESSORIES = register("accessories", AccessoriesMenu::new);
+ 	public static final RegistryObject<MenuType<LoreBookMenu>> BOOK_OF_LORE = register("book_of_lore",LoreBookMenu::new);
+ 	public static final RegistryObject<MenuType<AltarMenu>> ALTAR = register("altar", AltarMenu::new);
+ 	public static final RegistryObject<MenuType<FreezerMenu>> FREEZER = register("freezer", FreezerMenu::new);
+diff --git a/src/main/java/com/aetherteam/aether/item/accessories/abilities/SlowFallAccessory.java b/src/main/java/com/aetherteam/aether/item/accessories/abilities/SlowFallAccessory.java
+index 62d5588f6..14c06bcb7 100644
+--- a/src/main/java/com/aetherteam/aether/item/accessories/abilities/SlowFallAccessory.java
++++ b/src/main/java/com/aetherteam/aether/item/accessories/abilities/SlowFallAccessory.java
+@@ -1,6 +1,7 @@
+ package com.aetherteam.aether.item.accessories.abilities;
+ 
+ import com.aetherteam.aether.mixin.mixins.common.accessor.ServerGamePacketListenerImplAccessor;
++import com.aetherteam.aether.utils.FabricUtils;
+ import io.github.fabricators_of_create.porting_lib.attributes.PortingLibAttributes;
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.world.entity.LivingEntity;
+@@ -16,7 +17,7 @@ public interface SlowFallAccessory {
+     default void handleSlowFall(LivingEntity livingEntity) {
+         AttributeInstance gravity = livingEntity.getAttribute(PortingLibAttributes.ENTITY_GRAVITY);
+         if (gravity != null) {
+-            if (livingEntity.getDeltaMovement().y() <= -0.06 && !livingEntity.onGround() && !livingEntity.isFallFlying() /*&& !livingEntity.isInFluidType() TODO: PORT*/ && !livingEntity.isShiftKeyDown() && gravity.getValue() > 0.0075) {
++            if (livingEntity.getDeltaMovement().y() <= -0.06 && !livingEntity.onGround() && !livingEntity.isFallFlying() && !FabricUtils.isInFluidType(livingEntity) && !livingEntity.isShiftKeyDown() && gravity.getValue() > 0.0075) {
+                 livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().multiply(1.0, 0.6, 1.0));
+             }
+         }
+diff --git a/src/main/java/com/aetherteam/aether/item/combat/abilities/armor/ValkyrieArmor.java b/src/main/java/com/aetherteam/aether/item/combat/abilities/armor/ValkyrieArmor.java
+index c10e70c83..c37ade6f0 100644
+--- a/src/main/java/com/aetherteam/aether/item/combat/abilities/armor/ValkyrieArmor.java
++++ b/src/main/java/com/aetherteam/aether/item/combat/abilities/armor/ValkyrieArmor.java
+@@ -3,6 +3,7 @@ package com.aetherteam.aether.item.combat.abilities.armor;
+ import com.aetherteam.aether.capability.player.AetherPlayer;
+ import com.aetherteam.aether.item.EquipmentUtil;
+ import com.aetherteam.aether.mixin.mixins.common.accessor.ServerGamePacketListenerImplAccessor;
++import com.aetherteam.aether.utils.FabricUtils;
+ import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents;
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.world.entity.LivingEntity;
+@@ -55,6 +56,6 @@ public interface ValkyrieArmor {
+     }
+ 
+     private static boolean onGround(Player player) {
+-        return player.onGround()/* || player.isInFluidType() TODO: PORT*/;
++        return player.onGround() || FabricUtils.isInFluidType(player);
+     }
+ }
+diff --git a/src/main/java/com/aetherteam/aether/item/combat/abilities/weapon/GravititeWeapon.java b/src/main/java/com/aetherteam/aether/item/combat/abilities/weapon/GravititeWeapon.java
+index 5f9f7a3bc..c4c3ee010 100644
+--- a/src/main/java/com/aetherteam/aether/item/combat/abilities/weapon/GravititeWeapon.java
++++ b/src/main/java/com/aetherteam/aether/item/combat/abilities/weapon/GravititeWeapon.java
+@@ -2,6 +2,7 @@ package com.aetherteam.aether.item.combat.abilities.weapon;
+ 
+ import com.aetherteam.aether.AetherTags;
+ import com.aetherteam.aether.item.EquipmentUtil;
++import com.aetherteam.aether.utils.FabricUtils;
+ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.world.entity.LivingEntity;
+@@ -15,7 +16,7 @@ public interface GravititeWeapon {
+      */
+     default void launchEntity(LivingEntity target, LivingEntity attacker) {
+         if (EquipmentUtil.isFullStrength(attacker)) {
+-            if (!target.getType().is(AetherTags.Entities.UNLAUNCHABLE) && (target.onGround()/* || target.isInFluidType() TODO: PORT*/)) {
++            if (!target.getType().is(AetherTags.Entities.UNLAUNCHABLE) && (target.onGround() || FabricUtils.isInFluidType(target))) {
+                 target.push(0.0, 1.0, 0.0);
+                 if (target instanceof ServerPlayer serverPlayer) {
+                     serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
+diff --git a/src/main/java/com/aetherteam/aether/item/miscellaneous/ParachuteItem.java b/src/main/java/com/aetherteam/aether/item/miscellaneous/ParachuteItem.java
+index f81b179a1..2172a8068 100644
+--- a/src/main/java/com/aetherteam/aether/item/miscellaneous/ParachuteItem.java
++++ b/src/main/java/com/aetherteam/aether/item/miscellaneous/ParachuteItem.java
+@@ -1,6 +1,7 @@
+ package com.aetherteam.aether.item.miscellaneous;
+ 
+ import com.aetherteam.aether.entity.miscellaneous.Parachute;
++import com.aetherteam.aether.utils.FabricUtils;
+ import net.minecraft.stats.Stats;
+ import net.minecraft.world.InteractionHand;
+ import net.minecraft.world.InteractionResultHolder;
+@@ -34,7 +35,7 @@ public class ParachuteItem extends Item {
+     @Override
+     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+         ItemStack heldStack = player.getItemInHand(hand);
+-        if (!player.onGround()/* && !player.isInFluidType() TODO: PORT*/ && !player.isShiftKeyDown()) { // Player has to be on ground and can't be in liquid, and also can't be holding shift.
++        if (!player.onGround() && !FabricUtils.isInFluidType(player) && !player.isShiftKeyDown()) { // Player has to be on ground and can't be in liquid, and also can't be holding shift.
+             Entity entity = this.getParachuteEntity().get().create(level);
+             if (entity instanceof Parachute parachute) {
+                 parachute.setPos(player.getX(), player.getY() - 1.0, player.getZ()); // Spawn Parachute below player.
+diff --git a/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/GameRendererMixin.java b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/GameRendererMixin.java
+new file mode 100644
+index 000000000..7fb9b79ee
+--- /dev/null
++++ b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/GameRendererMixin.java
+@@ -0,0 +1,19 @@
++package com.aetherteam.aether.mixin.mixins.client.fabric;
++
++import com.aetherteam.aether.client.event.listeners.WorldPreviewListener;
++import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
++import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
++import net.minecraft.client.gui.GuiGraphics;
++import net.minecraft.client.gui.screens.Screen;
++import net.minecraft.client.renderer.GameRenderer;
++import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.injection.At;
++
++@Mixin(GameRenderer.class)
++public class GameRendererMixin {
++    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V"))
++    private void shouldCancel(Screen instance, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
++        if (!WorldPreviewListener.onScreenRender(instance))
++            original.call(instance, guiGraphics, mouseX, mouseY, partialTick);
++    }
++}
+diff --git a/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/LevelRendererMixin.java b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/LevelRendererMixin.java
+new file mode 100644
+index 000000000..434b881ac
+--- /dev/null
++++ b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/LevelRendererMixin.java
+@@ -0,0 +1,31 @@
++package com.aetherteam.aether.mixin.mixins.client.fabric;
++
++import com.aetherteam.aether.client.event.hooks.LevelClientHooks;
++import com.llamalad7.mixinextras.sugar.Local;
++import com.mojang.blaze3d.vertex.PoseStack;
++import net.minecraft.client.Camera;
++import net.minecraft.client.Minecraft;
++import net.minecraft.client.renderer.GameRenderer;
++import net.minecraft.client.renderer.LevelRenderer;
++import net.minecraft.client.renderer.LightTexture;
++import net.minecraft.client.renderer.culling.Frustum;
++import org.joml.Matrix4f;
++import org.spongepowered.asm.mixin.Final;
++import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.Shadow;
++import org.spongepowered.asm.mixin.injection.At;
++import org.spongepowered.asm.mixin.injection.Inject;
++import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
++
++@Mixin(LevelRenderer.class)
++public class LevelRendererMixin {
++    @Shadow @Final private Minecraft minecraft;
++
++    /**
++     * @see LevelClientHooks#renderDungeonBlockOverlays(PoseStack, Camera, Frustum, Minecraft)
++     */
++    @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/ParticleEngine;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;F)V", shift = At.Shift.AFTER))
++    private void renderDungeonBlockOverlays(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci, @Local(index = 20) Frustum frustum) {
++        LevelClientHooks.renderDungeonBlockOverlays(poseStack, camera, frustum, this.minecraft);
++    }
++}
+diff --git a/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/LocalPlayerMixin.java b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/LocalPlayerMixin.java
+new file mode 100644
+index 000000000..08e365b69
+--- /dev/null
++++ b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/LocalPlayerMixin.java
+@@ -0,0 +1,28 @@
++package com.aetherteam.aether.mixin.mixins.client.fabric;
++
++import com.aetherteam.aether.client.event.listeners.capability.AetherPlayerClientListener;
++import com.mojang.authlib.GameProfile;
++import net.minecraft.client.player.Input;
++import net.minecraft.client.player.LocalPlayer;
++import net.minecraft.core.BlockPos;
++import net.minecraft.world.entity.player.Player;
++import net.minecraft.world.level.Level;
++import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.Shadow;
++import org.spongepowered.asm.mixin.injection.At;
++import org.spongepowered.asm.mixin.injection.Inject;
++import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
++
++@Mixin(LocalPlayer.class)
++public abstract class LocalPlayerMixin extends Player {
++    @Shadow public Input input;
++
++    public LocalPlayerMixin(Level level, BlockPos pos, float yRot, GameProfile gameProfile) {
++        super(level, pos, yRot, gameProfile);
++    }
++
++    @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/tutorial/Tutorial;onInput(Lnet/minecraft/client/player/Input;)V"))
++    private void onMovementTick(CallbackInfo ci) {
++        AetherPlayerClientListener.onMove(this, this.input);
++    }
++}
+diff --git a/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/MinecraftMixin.java b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/MinecraftMixin.java
+index 2218c9b5d..8162cdb32 100644
+--- a/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/MinecraftMixin.java
++++ b/src/main/java/com/aetherteam/aether/mixin/mixins/client/fabric/MinecraftMixin.java
+@@ -1,6 +1,7 @@
+ package com.aetherteam.aether.mixin.mixins.client.fabric;
+ 
+ import com.aetherteam.aether.client.event.listeners.MenuListener;
++import com.aetherteam.aether.client.event.listeners.WorldPreviewListener;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.gui.screens.Screen;
+ import org.spongepowered.asm.mixin.Mixin;
+@@ -14,4 +15,9 @@ public class MinecraftMixin {
+     private void openMenu(Screen guiScreen, CallbackInfo ci) {
+         MenuListener.onGuiOpenHighest();
+     }
++
++    @Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;init(Lnet/minecraft/client/Minecraft;II)V", shift = At.Shift.AFTER))
++    private void afterInit(Screen guiScreen, CallbackInfo ci) {
++        WorldPreviewListener.onGuiOpenLowest(guiScreen);
++    }
+ }
+diff --git a/src/main/java/com/aetherteam/aether/mixin/mixins/common/ModelBuilderMixin.java b/src/main/java/com/aetherteam/aether/mixin/mixins/common/ModelBuilderMixin.java
+index 18058b89a..5dc2fac9e 100644
+--- a/src/main/java/com/aetherteam/aether/mixin/mixins/common/ModelBuilderMixin.java
++++ b/src/main/java/com/aetherteam/aether/mixin/mixins/common/ModelBuilderMixin.java
+@@ -14,6 +14,7 @@ import java.util.Map;
+ /**
+  * Used only in runData to get around an incorrect missing texture issue with armor trim data generation.
+  */
++
+ @Mixin(ModelBuilder.class)
+ public abstract class ModelBuilderMixin<T extends ModelBuilder<T>> {
+     @Shadow(remap = false)
+@@ -23,7 +24,7 @@ public abstract class ModelBuilderMixin<T extends ModelBuilder<T>> {
+     @Shadow(remap = false)
+     protected abstract T self();
+ 
+-    @Inject(at = @At(value = "HEAD"), method = "texture(Ljava/lang/String;Lnet/minecraft/resources/ResourceLocation;)Lio/github/fabricators_of_create/porting_lib/models/generators/ModelBuilder;", cancellable = true, remap = false)
++    @Inject(at = @At(value = "HEAD"), method = "texture(Ljava/lang/String;Lnet/minecraft/resources/ResourceLocation;)Lio/github/fabricators_of_create/porting_lib/models/generators/ModelBuilder;", cancellable = true)
+     private void texture(String key, ResourceLocation texture, CallbackInfoReturnable<T> cir) {
+         this.textures.put(key, texture.toString());
+         cir.setReturnValue(this.self());
+diff --git a/src/main/java/com/aetherteam/aether/utils/FabricUtils.java b/src/main/java/com/aetherteam/aether/utils/FabricUtils.java
+index ec7003d90..441c7a575 100644
+--- a/src/main/java/com/aetherteam/aether/utils/FabricUtils.java
++++ b/src/main/java/com/aetherteam/aether/utils/FabricUtils.java
+@@ -2,6 +2,7 @@ package com.aetherteam.aether.utils;
+ 
+ import com.aetherteam.aether.mixin.mixins.common.accessor.EntityAccessor;
+ import io.github.fabricators_of_create.porting_lib.enchant.CustomEnchantingBehaviorItem;
++import net.minecraft.world.entity.Entity;
+ import net.minecraft.world.entity.LivingEntity;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.enchantment.Enchantment;
+@@ -11,7 +12,7 @@ import java.util.Map;
+ 
+ public class FabricUtils {
+ 
+-    public static boolean isInFluidType(LivingEntity livingEntity) {
++    public static boolean isInFluidType(Entity livingEntity) {
+         return ((EntityAccessor) livingEntity).getFluidHeight().size() > 0;
+     }
+ 
+diff --git a/src/main/resources/aether.mixins.json b/src/main/resources/aether.mixins.json
+index 4d0278581..f4e61a1ca 100644
+--- a/src/main/resources/aether.mixins.json
++++ b/src/main/resources/aether.mixins.json
+@@ -4,9 +4,8 @@
+   "plugin": "com.aetherteam.aether.mixin.AetherMixinPlugin",
+   "minVersion": "0.8",
+   "compatibilityLevel": "JAVA_17",
+-  "refmap": "aether.refmap.json",
++  "refmap": "aether-refmap.json",
+   "mixins": [
+-    "client.EntityRenderDispatcherMixin",
+     "common.AbstractArrowMixin",
+     "common.ArmorStandMixin",
+     "common.DimensionTypeMixin",
+@@ -67,6 +66,7 @@
+     "client.accessor.QuadrupedModelAccessor",
+     "client.accessor.ScreenAccessor",
+     "client.accessor.TitleScreenAccessor",
++    "client.fabric.LocalPlayerMixin",
+     "client.optifine.BossHealthOverlayMixin"
+   ],
+   "injectors": {
+diff --git a/src/main/resources/aether_fabric.mixins.json b/src/main/resources/aether_fabric.mixins.json
+index 00de39ddc..75ab40fcf 100644
+--- a/src/main/resources/aether_fabric.mixins.json
++++ b/src/main/resources/aether_fabric.mixins.json
+@@ -4,13 +4,15 @@
+   "plugin": "com.aetherteam.aether.mixin.AetherMixinPlugin",
+   "minVersion": "0.8",
+   "compatibilityLevel": "JAVA_17",
+-  "refmap": "aether.refmap.json",
++  "refmap": "aether-refmap.json",
+   "mixins": [
+   ],
+   "client": [
+-    "client.fabric.ExistingFileHelperMixin",
+     "client.fabric.BossHealthOverlayMixin",
+     "client.fabric.ClientPacketListenerMixin",
++    "client.fabric.ExistingFileHelperMixin",
++    "client.fabric.GameRendererMixin",
++    "client.fabric.LevelRendererMixin",
+     "client.fabric.MinecraftMixin"
+   ]
+ }
+\ No newline at end of file
+diff --git a/src/main/resources/assets/minecraft/atlases/blocks.json b/src/main/resources/assets/minecraft/atlases/blocks.json
+index 34babba29..8fabed35f 100644
+--- a/src/main/resources/assets/minecraft/atlases/blocks.json
++++ b/src/main/resources/assets/minecraft/atlases/blocks.json
+@@ -5,6 +5,11 @@
+       "source": "gui/slots",
+       "prefix": "gui/slots/"
+     },
++    {
++      "type": "directory",
++      "source": "slot",
++      "prefix": "slot/"
++    },
+     {
+       "type": "paletted_permutations",
+       "textures": [
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/entities/humanoids.json b/src/main/resources/packs/accessories/data/aether/curios/entity/humanoids.json
+similarity index 100%
+rename from src/main/resources/packs/accessories/data/aether/curios/entities/humanoids.json
+rename to src/main/resources/packs/accessories/data/aether/curios/entity/humanoids.json
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/entities/player.json b/src/main/resources/packs/accessories/data/aether/curios/entity/player.json
+similarity index 100%
+rename from src/main/resources/packs/accessories/data/aether/curios/entities/player.json
+rename to src/main/resources/packs/accessories/data/aether/curios/entity/player.json
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/entities/stand.json b/src/main/resources/packs/accessories/data/aether/curios/entity/stand.json
+similarity index 100%
+rename from src/main/resources/packs/accessories/data/aether/curios/entities/stand.json
+rename to src/main/resources/packs/accessories/data/aether/curios/entity/stand.json
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/group/arm.json b/src/main/resources/packs/accessories/data/aether/curios/group/arm.json
+new file mode 100644
+index 000000000..6d200947b
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/group/arm.json
+@@ -0,0 +1,8 @@
++{
++  "replace": false,
++  "slots": [
++    "aether_gloves",
++    "aether_ring",
++    "aether_shield"
++  ]
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/group/chest.json b/src/main/resources/packs/accessories/data/aether/curios/group/chest.json
+new file mode 100644
+index 000000000..5fd3ae1c8
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/group/chest.json
+@@ -0,0 +1,7 @@
++{
++  "replace": false,
++  "slots": [
++    "aether_cape",
++    "aether_pendant"
++  ]
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/group/misc.json b/src/main/resources/packs/accessories/data/aether/curios/group/misc.json
+new file mode 100644
+index 000000000..08496d734
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/group/misc.json
+@@ -0,0 +1,6 @@
++{
++  "replace": false,
++  "slots": [
++    "aether_accessory"
++  ]
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slot/aether_accessory.json b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_accessory.json
+new file mode 100644
+index 000000000..391a451a1
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_accessory.json
+@@ -0,0 +1,8 @@
++{
++  "replace": false,
++  "amount": 2,
++  "operation": "set",
++  "order": 1000,
++  "icon": "aether:slot/misc",
++  "use_native_gui": false
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slot/aether_cape.json b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_cape.json
+new file mode 100644
+index 000000000..a5dcb1d89
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_cape.json
+@@ -0,0 +1,8 @@
++{
++  "replace": false,
++  "amount": 1,
++  "operation": "set",
++  "order": 1000,
++  "icon": "aether:slot/cape",
++  "use_native_gui": false
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slot/aether_gloves.json b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_gloves.json
+new file mode 100644
+index 000000000..81ad67b46
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_gloves.json
+@@ -0,0 +1,8 @@
++{
++  "replace": false,
++  "amount": 1,
++  "operation": "set",
++  "order": 1000,
++  "icon": "aether:slot/gloves",
++  "use_native_gui": false
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slot/aether_pendant.json b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_pendant.json
+new file mode 100644
+index 000000000..49fee2302
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_pendant.json
+@@ -0,0 +1,8 @@
++{
++  "replace": false,
++  "amount": 1,
++  "operation": "set",
++  "order": 1000,
++  "icon": "aether:slot/pendant",
++  "use_native_gui": false
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slot/aether_ring.json b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_ring.json
+new file mode 100644
+index 000000000..fe201ebc5
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_ring.json
+@@ -0,0 +1,8 @@
++{
++  "replace": false,
++  "amount": 2,
++  "operation": "set",
++  "order": 1000,
++  "icon": "aether:slot/ring",
++  "use_native_gui": false
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slot/aether_shield.json b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_shield.json
+new file mode 100644
+index 000000000..b7930daf7
+--- /dev/null
++++ b/src/main/resources/packs/accessories/data/aether/curios/slot/aether_shield.json
+@@ -0,0 +1,8 @@
++{
++  "replace": false,
++  "amount": 1,
++  "operation": "set",
++  "order": 1000,
++  "icon": "aether:slot/shield",
++  "use_native_gui": false
++}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_accessory.json b/src/main/resources/packs/accessories/data/aether/curios/slots/aether_accessory.json
+deleted file mode 100644
+index 5f5ac64c0..000000000
+--- a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_accessory.json
++++ /dev/null
+@@ -1,5 +0,0 @@
+-{
+-  "size": 2,
+-  "icon": "aether:slot/misc",
+-  "use_native_gui": false
+-}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_cape.json b/src/main/resources/packs/accessories/data/aether/curios/slots/aether_cape.json
+deleted file mode 100644
+index 29c7d4cb8..000000000
+--- a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_cape.json
++++ /dev/null
+@@ -1,4 +0,0 @@
+-{
+-  "icon": "aether:slot/cape",
+-  "use_native_gui": false
+-}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_gloves.json b/src/main/resources/packs/accessories/data/aether/curios/slots/aether_gloves.json
+deleted file mode 100644
+index 403b3a220..000000000
+--- a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_gloves.json
++++ /dev/null
+@@ -1,4 +0,0 @@
+-{
+-  "icon": "aether:slot/gloves",
+-  "use_native_gui": false
+-}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_pendant.json b/src/main/resources/packs/accessories/data/aether/curios/slots/aether_pendant.json
+deleted file mode 100644
+index b97d3e2a0..000000000
+--- a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_pendant.json
++++ /dev/null
+@@ -1,4 +0,0 @@
+-{
+-  "icon": "aether:slot/pendant",
+-  "use_native_gui": false
+-}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_ring.json b/src/main/resources/packs/accessories/data/aether/curios/slots/aether_ring.json
+deleted file mode 100644
+index 694e771a7..000000000
+--- a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_ring.json
++++ /dev/null
+@@ -1,5 +0,0 @@
+-{
+-  "size": 2,
+-  "icon": "aether:slot/ring",
+-  "use_native_gui": false
+-}
+\ No newline at end of file
+diff --git a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_shield.json b/src/main/resources/packs/accessories/data/aether/curios/slots/aether_shield.json
+deleted file mode 100644
+index 6cdbc3e94..000000000
+--- a/src/main/resources/packs/accessories/data/aether/curios/slots/aether_shield.json
++++ /dev/null
+@@ -1,4 +0,0 @@
+-{
+-  "icon": "aether:slot/shield",
+-  "use_native_gui": false
+-}
+\ No newline at end of file

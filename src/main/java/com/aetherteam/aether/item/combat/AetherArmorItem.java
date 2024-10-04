@@ -26,6 +26,6 @@ public class AetherArmorItem extends ArmorItem implements ArmorTextureItem {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return String.format("%s:textures/models/armor/%s_layer_%s.png", Aether.MODID, this.getMaterial().getName(), slot == EquipmentSlot.LEGS ? 2 : 1);
+        return String.format("minecraft:textures/models/armor/%s_layer_%s.png", this.getMaterial().getName(), slot == EquipmentSlot.LEGS ? 2 : 1);
     }
 }

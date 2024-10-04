@@ -187,7 +187,7 @@ public class Aether implements ModInitializer {
         this.registerComposting();
     }
 
-    public void packSetup(AddPackFindersEvent event) {
+    public void packSetup(AddPackFindersEvent event) { //TODO: PORT
         // Resource Packs
         this.setupReleasePack(event);
         this.setupBetaPack(event);

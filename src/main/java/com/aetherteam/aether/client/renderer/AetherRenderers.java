@@ -213,7 +213,7 @@ public class AetherRenderers {
     public static void init() {
         registerEntityRenderers();
         registerLayerDefinitions();
-        registerCuriosRenderers();
+        //registerCuriosRenderers();
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register(AetherRenderers::addEntityLayers);
     }
 }
