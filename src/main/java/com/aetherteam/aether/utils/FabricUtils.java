@@ -7,13 +7,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+//import com.aetherteam.aether.Aether;
+import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 
 import java.util.Map;
 
 public class FabricUtils {
 
     public static boolean isInFluidType(Entity livingEntity) {
-        return ((EntityAccessor) livingEntity).getFluidHeight().size() > 0;
+        for (DoubleIterator itr = ((EntityAccessor) livingEntity).getFluidHeight().values().iterator(); itr.hasNext();) {
+            double fluidHeight = itr.nextDouble();
+                if (fluidHeight > 0) { return true; }
+            }
+        return false;
+        // Thank you TropheusJay asdf
     }
 
     public static boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
