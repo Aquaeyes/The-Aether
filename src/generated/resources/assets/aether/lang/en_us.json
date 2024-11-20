@@ -337,6 +337,7 @@
   "config.aether.server.world_generation.generate_tall_grass": "Determines whether the Aether should generate Tall Grass blocks on terrain or not",
   "curios.identifier.aether_accessory": "Accessory",
   "curios.identifier.aether_cape": "Cape",
+  "trinkets.slot.offhand.shield": "Shield",
   "curios.identifier.aether_gloves": "Gloves",
   "curios.identifier.aether_pendant": "Pendant",
   "curios.identifier.aether_ring": "Ring",
