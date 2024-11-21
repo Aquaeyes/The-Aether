@@ -1,5 +1,6 @@
 package com.aetherteam.aether.event.hooks;
 
+import com.aetherteam.aether.Aether;
 import com.aetherteam.aether.AetherConfig;
 import com.aetherteam.aether.AetherTags;
 import com.aetherteam.aether.block.portal.AetherPortalForcer;
@@ -166,7 +167,7 @@ public class DimensionHooks {
             if (!AetherConfig.SERVER.disable_falling_to_overworld.get()) {
                 if (level.dimension() == LevelUtil.destinationDimension()) {
                     for (Entity entity : serverLevel.getEntities(EntityTypeTest.forClass(Entity.class), (entity) -> entity.getY() <= serverLevel.getMinBuildHeight() && !entity.isPassenger() && level.getBiome(entity.blockPosition()).is(AetherTags.Biomes.FALL_TO_OVERWORLD))) {
-                        if (entity instanceof Player || entity.isVehicle() || (entity instanceof Saddleable) && ((Saddleable) entity).isSaddled()) { // Checks if an entity is a player or a vehicle of a player.
+                        if (entity instanceof Player || entity.isVehicle() || AetherConfig.SERVER.always_fall_to_overworld.get() || (entity instanceof Saddleable) && ((Saddleable) entity).isSaddled()) { // Checks if an entity is a player or a vehicle of a player.
                             entityFell(entity);
                         } else if (entity instanceof ItemEntity itemEntity) {
                             Optional<DroppedItem> droppedItem = DroppedItem.get(itemEntity);
@@ -197,6 +198,7 @@ public class DimensionHooks {
                 serverLevel.getProfiler().push("aether_fall");
                 entity.setPortalCooldown();
                 Entity target = entity.changeDimension(destination, new AetherPortalForcer(destination, false));
+                Aether.LOGGER.error("target: {}", target);
                 serverLevel.getProfiler().pop();
                 // Check for passengers.
                 if (target != null) {
@@ -245,7 +247,8 @@ public class DimensionHooks {
      */
     public static void dimensionTravel(Entity entity, ResourceKey<Level> dimension) {
         if (entity instanceof Player player) {
-            AetherPlayer.getOptional(player).ifPresent(aetherPlayer -> {
+            if (!player.level().isClientSide()) {
+                var aetherPlayer = AetherPlayer.get(player);
                 if (!AetherConfig.SERVER.spawn_in_aether.get() || !aetherPlayer.canSpawnInAether()) {
                     if (entity.level().getBiome(entity.blockPosition()).is(AetherTags.Biomes.DISPLAY_TRAVEL_TEXT)) {
                         if (entity.level().dimension() == LevelUtil.destinationDimension() && dimension == LevelUtil.returnDimension()) { // We display the Descending GUI text to the player if they're about to return to the Overworld.
@@ -264,7 +267,7 @@ public class DimensionHooks {
                         }
                     }
                 }
-            });
+            }
         }
     }
 

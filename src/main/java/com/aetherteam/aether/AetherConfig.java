@@ -33,6 +33,7 @@ public class AetherConfig {
         public final ConfigValue<Boolean> spawn_in_aether;
         public final ConfigValue<Boolean> disable_aether_portal;
         public final ConfigValue<Boolean> disable_falling_to_overworld;
+        public final ConfigValue<Boolean> always_fall_to_overworld;
         public final ConfigValue<Boolean> disable_eternal_day;
         public final ConfigValue<String> portal_destination_dimension_ID;
         public final ConfigValue<String> portal_return_dimension_ID;
@@ -135,6 +136,10 @@ public class AetherConfig {
                     .comment("Prevents the player from falling back to the Overworld when they fall out of the Aether")
                     .translation("config.aether.server.modpack.disable_falling_to_overworld")
                     .define("Disables falling into the Overworld", false);
+            always_fall_to_overworld = builder
+                    .comment("Shortcuts to always making an entity fall to the Overworld if they fall out of the Aether")
+                    .translation("config.aether.server.modpack.always_fall_to_overworld")
+                    .define("Forces falling into the Overworld for all Entities", false);
             disable_eternal_day = builder
                     .comment("Removes eternal day so that the Aether has a normal daylight cycle even before defeating the Sun Spirit")
                     .translation("config.aether.server.modpack.disable_eternal_day")

@@ -73,25 +73,33 @@ public class AetherPortalForcer implements ITeleporter {
         if (entity.level().dimension() != LevelUtil.destinationDimension() && !isAether) {
             return null;
         } else if (this.isStartup) {
+            Aether.LOGGER.error("Starting up with {}, {}", new Vec3(entity.getX(), destinationLevel.getMaxBuildHeight(), entity.getZ()), entity.getDeltaMovement());
             return new PortalInfo(this.checkPositionsForInitialSpawn(destinationLevel, entity.blockPosition()).getCenter(), Vec3.ZERO, entity.getYRot(), entity.getXRot());
         } else if (!this.hasFrame) { // For falling out of the Aether.
-            return new PortalInfo(new Vec3(entity.getX(), destinationLevel.getMaxBuildHeight(), entity.getZ()), Vec3.ZERO, entity.getYRot(), entity.getXRot());
+            Aether.LOGGER.error("Falling with {}, {}", new Vec3(entity.getX(), destinationLevel.getMaxBuildHeight(), entity.getZ()), entity.getDeltaMovement());
+            return new PortalInfo(new Vec3(entity.getX(), destinationLevel.getMaxBuildHeight(), entity.getZ()), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
         } else {
+            Aether.LOGGER.error("Portalling with {}, {}", new Vec3(entity.getX(), destinationLevel.getMaxBuildHeight(), entity.getZ()), entity.getDeltaMovement());
             WorldBorder worldBorder = destinationLevel.getWorldBorder();
             double scale = DimensionType.getTeleportationScale(this.level.dimensionType(), destinationLevel.dimensionType());
             BlockPos scaledEntityPos = worldBorder.clampToBounds(entity.getX() * scale, entity.getY(), entity.getZ() * scale);
             return this.getExitPortal(entity, scaledEntityPos, worldBorder).map((rectangle) -> {
+                Aether.LOGGER.error("Scaled entity position: {}, rectangle: {}", scaledEntityPos, rectangle);
                 BlockState blockState = this.level.getBlockState(entityAccessor.aether$getPortalEntrancePos());
                 Direction.Axis axis;
                 Vec3 vec3;
                 if (blockState.hasProperty(BlockStateProperties.HORIZONTAL_AXIS)) {
+                    Aether.LOGGER.error("Horizontal Axis");
                     axis = blockState.getValue(BlockStateProperties.HORIZONTAL_AXIS);
                     BlockUtil.FoundRectangle foundRectangle = BlockUtil.getLargestRectangleAround(entityAccessor.aether$getPortalEntrancePos(), axis, 21, Direction.Axis.Y, 21, (blockPos) -> this.level.getBlockState(blockPos) == blockState);
                     vec3 = entityAccessor.callGetRelativePortalPosition(axis, foundRectangle);
+                    Aether.LOGGER.error("Relative Portal Position entity position: axis: {}, foundRectangle: {}", axis, foundRectangle);
                 } else {
+                    Aether.LOGGER.error("No Horizontal Axis");
                     axis = Direction.Axis.X;
                     vec3 = new Vec3(0.5, 0.0, 0.0);
                 }
+                Aether.LOGGER.error("Calling createPortalInfo with: {}, {}, {}, {}, {}, {}, {}, {}, {}", destinationLevel, rectangle, axis, vec3, entity, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
                 return PortalShape.createPortalInfo(destinationLevel, rectangle, axis, vec3, entity, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
             }).orElse(null);
         }
