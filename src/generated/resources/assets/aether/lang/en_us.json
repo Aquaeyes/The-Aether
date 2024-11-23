@@ -326,6 +326,7 @@
   "config.aether.server.modpack.disable_aether_portal": "Prevents the Aether Portal from being created normally in the mod",
   "config.aether.server.modpack.disable_eternal_day": "Removes eternal day so that the Aether has a normal daylight cycle even before defeating the Sun Spirit",
   "config.aether.server.modpack.disable_falling_to_overworld": "Prevents the player from falling back to the Overworld when they fall out of the Aether",
+  "config.aether.server.modpack.ascend_to_aether": "Allows the player to ascend to the aether by going 192 blocks above the world height of the Overworld.",
   "config.aether.server.modpack.always_fall_to_overworld": "Shortcuts to always making an entity fall to the Overworld if they fall out of the Aether",
   "config.aether.server.modpack.portal_destination_dimension_ID": "Sets the ID of the dimension that the Aether Portal will send the player to",
   "config.aether.server.modpack.portal_return_dimension_ID": "Sets the ID of the dimension that the Aether Portal will return the player to",

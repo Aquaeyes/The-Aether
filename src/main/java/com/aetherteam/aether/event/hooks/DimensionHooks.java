@@ -40,10 +40,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
+
+
+import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.PortalShape;
+import java.util.EnumSet;
+import java.util.function.Function;
+import java.util.Objects;
 
 public class DimensionHooks {
     public static boolean playerLeavingAether;
@@ -55,6 +64,11 @@ public class DimensionHooks {
      * @param player The {@link Player}.
      * @see com.aetherteam.aether.event.listeners.DimensionListener#onPlayerLogin(Player)
      */
+    public static void teleportToDimension(Entity entity, ServerLevel destinationLevel, Vec3 position, Vec3 velocity) {
+        entity.teleportTo(destinationLevel, position.x(), position.y(), position.z(), EnumSet.noneOf(RelativeMovement.class), entity.getYRot(), entity.getXRot());//new Vec3(0.0, 0.5, 0.0)
+        entity.setDeltaMovement(velocity);
+        entity.hurtMarked = true;
+    }
     public static void startInAether(Player player) {
         AetherPlayer.getOptional(player).ifPresent(aetherPlayer -> {
             if (AetherConfig.SERVER.spawn_in_aether.get()) {
@@ -63,6 +77,7 @@ public class DimensionHooks {
                         MinecraftServer server = serverPlayer.level().getServer();
                         ServerLevel aetherLevel = server.getLevel(AetherDimensions.AETHER_LEVEL);
                         if (aetherLevel != null && serverPlayer.level().dimension() == Level.OVERWORLD) {
+                            //TODO: replace this with teleportToDimension
                             if (aetherPlayer.getPlayer().changeDimension(aetherLevel, new AetherPortalForcer(aetherLevel, false, true)) != null) {
                                 serverPlayer.setRespawnPosition(AetherDimensions.AETHER_LEVEL, serverPlayer.blockPosition(), serverPlayer.getYRot(), true, false);
                                 aetherPlayer.setCanSpawnInAether(false); // Sets that the player has already spawned in the Aether.
@@ -158,7 +173,7 @@ public class DimensionHooks {
     }
 
     /**
-     * This code is used to handle entities falling out of the Aether. If an entity is not a player, vehicle, or tracked item, it is removed.
+     * This code is used to handle entities falling out of the Aether. If an entity is not a player, vehicle, or tracked item, it is removed, unless set to always occur.
      * @param level The {@link Level}
      * @see com.aetherteam.aether.event.listeners.DimensionListener#onWorldTick(ServerLevel)
      */
@@ -166,7 +181,7 @@ public class DimensionHooks {
         if (level instanceof ServerLevel serverLevel) {
             if (!AetherConfig.SERVER.disable_falling_to_overworld.get()) {
                 if (level.dimension() == LevelUtil.destinationDimension()) {
-                    for (Entity entity : serverLevel.getEntities(EntityTypeTest.forClass(Entity.class), (entity) -> entity.getY() <= serverLevel.getMinBuildHeight() && !entity.isPassenger() && level.getBiome(entity.blockPosition()).is(AetherTags.Biomes.FALL_TO_OVERWORLD))) {
+                    for (Entity entity : serverLevel.getEntities(EntityTypeTest.forClass(Entity.class), (entity) -> entity.getY() <= (serverLevel.getMinBuildHeight() - 1) && !entity.isPassenger() && level.getBiome(entity.blockPosition()).is(AetherTags.Biomes.FALL_TO_OVERWORLD))) {
                         if (entity instanceof Player || entity.isVehicle() || AetherConfig.SERVER.always_fall_to_overworld.get() || (entity instanceof Saddleable) && ((Saddleable) entity).isSaddled()) { // Checks if an entity is a player or a vehicle of a player.
                             entityFell(entity);
                         } else if (entity instanceof ItemEntity itemEntity) {
@@ -177,6 +192,30 @@ public class DimensionHooks {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * This code is used to handle entities physically ascending to the Aether.
+     * @param level The {@link Level}
+     * @see com.aetherteam.aether.event.listeners.DimensionListener#onWorldTick(ServerLevel)
+     */
+    // PACK SPECIFIC - remove later?
+    public static void ascendToAether(Level level) {
+        if (level instanceof ServerLevel serverLevel) {
+            if (AetherConfig.SERVER.ascend_to_aether.get()) {
+                MinecraftServer minecraftserver = serverLevel.getServer();
+                ServerLevel destination = minecraftserver.getLevel(LevelUtil.destinationDimension());
+                if (destination != null && level.dimension() == LevelUtil.returnDimension()) {
+                    for (Entity entity : serverLevel.getEntities(EntityTypeTest.forClass(Entity.class), (entity) -> entity.getY() >= (serverLevel.getMaxBuildHeight() + 192) && !entity.isPassenger())) {
+                        Vec3 position = entity.position();
+                        Vec3 velocity = entity.getDeltaMovement();
+                        position = new Vec3(position.x(), destination.getMinBuildHeight() + 0.5, position.y());
+                        velocity = new Vec3(velocity.x(), velocity.y() + 1, velocity.y()); // give them a little boost up!
+                        teleportToDimension(entity, destination, position, velocity);
                     }
                 }
             }
@@ -197,26 +236,32 @@ public class DimensionHooks {
                 List<Entity> passengers = entity.getPassengers();
                 serverLevel.getProfiler().push("aether_fall");
                 entity.setPortalCooldown();
-                Entity target = entity.changeDimension(destination, new AetherPortalForcer(destination, false));
-                Aether.LOGGER.error("target: {}", target);
+
+                Vec3 position = entity.position();
+                position = new Vec3(position.x(), destination.getMaxBuildHeight() + 160, position.y());
+                teleportToDimension(entity, destination, position, entity.getDeltaMovement());
+                
+                //Entity target = entity.changeDimension(destination, new AetherPortalForcer(destination, false));
+                //target.setDeltaMovement(new Vec3(0.5, 0.0, 0.0));
+                //Aether.LOGGER.error("target: {}", target);targentityet
                 serverLevel.getProfiler().pop();
                 // Check for passengers.
-                if (target != null) {
+                if (entity != null) {
                     for (Entity passenger : passengers) {
                         passenger.stopRiding();
                         Entity nextPassenger = entityFell(passenger);
                         if (nextPassenger != null) {
-                            nextPassenger.startRiding(target);
-                            if (target instanceof ServerPlayer serverPlayer) { // Fixes a desync between the server and client.
-                                PacketRelay.sendToPlayer(AetherPacketHandler.INSTANCE, new SetVehiclePacket(nextPassenger.getId(), target.getId()), serverPlayer);
+                            nextPassenger.startRiding(entity);
+                            if (entity instanceof ServerPlayer serverPlayer) { // Fixes a desync between the server and client.
+                                PacketRelay.sendToPlayer(AetherPacketHandler.INSTANCE, new SetVehiclePacket(nextPassenger.getId(), entity.getId()), serverPlayer);
                             }
                         }
                     }
-                    if (target instanceof ServerPlayer) {
+                    if (entity instanceof ServerPlayer) {
                         teleportationTimer = 500; // Sets a timer marking that the player teleported from falling out of the Aether.
                     }
                 }
-                return target;
+                return entity;
             }
         }
         return null;

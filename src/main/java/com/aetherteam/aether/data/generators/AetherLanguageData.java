@@ -1230,6 +1230,7 @@ public class AetherLanguageData extends AetherLanguageProvider {
         this.addServerConfig("modpack", "spawn_in_aether", "Spawns the player in the Aether dimension; this is best enabled alongside other modpack configuration to avoid issues");
         this.addServerConfig("modpack", "disable_aether_portal", "Prevents the Aether Portal from being created normally in the mod");
         this.addServerConfig("modpack", "disable_falling_to_overworld", "Prevents the player from falling back to the Overworld when they fall out of the Aether");
+        this.addServerConfig("modpack", "ascend_to_aether", "Allows entities to ascend to the aether by going 192 blocks above the world height of the Overworld");
         this.addServerConfig("modpack", "always_fall_to_overworld", "Shortcuts to always making an entity fall to the Overworld if they fall out of the Aether");
         this.addServerConfig("modpack", "disable_eternal_day", "Removes eternal day so that the Aether has a normal daylight cycle even before defeating the Sun Spirit");
         this.addServerConfig("modpack", "portal_destination_dimension_ID", "Sets the ID of the dimension that the Aether Portal will send the player to");

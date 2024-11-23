@@ -91,6 +91,7 @@ public class AetherPortalBlock extends Block {
 			if (destinationLevel != null && !entity.isPassenger()) {
 				entity.level().getProfiler().push("aether_portal");
 				entity.setPortalCooldown();
+				//TODO: replace this with teleportToDimension
 				entity.changeDimension(destinationLevel, new AetherPortalForcer(destinationLevel, true));
 				entity.level().getProfiler().pop();
 			}
