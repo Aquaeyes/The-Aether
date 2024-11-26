@@ -213,7 +213,7 @@ public class DimensionHooks {
                     for (Entity entity : serverLevel.getEntities(EntityTypeTest.forClass(Entity.class), (entity) -> entity.getY() >= (serverLevel.getMaxBuildHeight() + 192) && !entity.isPassenger())) {
                         Vec3 position = entity.position();
                         Vec3 velocity = entity.getDeltaMovement();
-                        position = new Vec3(position.x(), destination.getMinBuildHeight() + 0.5, position.y());
+                        position = new Vec3(position.x(), destination.getMinBuildHeight() + 1, position.z());
                         velocity = new Vec3(velocity.x(), velocity.y() + 1, velocity.y()); // give them a little boost up!
                         teleportToDimension(entity, destination, position, velocity);
                     }
@@ -238,7 +238,7 @@ public class DimensionHooks {
                 entity.setPortalCooldown();
 
                 Vec3 position = entity.position();
-                position = new Vec3(position.x(), destination.getMaxBuildHeight() + 160, position.y());
+                position = new Vec3(position.x(), destination.getMaxBuildHeight() + 160, position.z());
                 teleportToDimension(entity, destination, position, entity.getDeltaMovement());
                 
                 //Entity target = entity.changeDimension(destination, new AetherPortalForcer(destination, false));
